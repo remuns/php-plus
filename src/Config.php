@@ -1,9 +1,9 @@
 <?php
 
-namespace Nextpack\Nextpack;
+namespace PhpPlus\Core;
 
 use Illuminate\Config\Repository;
-use Nextpack\Nextpack\Exceptions\ConfigFileNotFoundException;
+use PhpPlus\Core\Exceptions\ConfigFileNotFoundException;
 
 /**
  * Class Config

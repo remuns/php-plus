@@ -1,6 +1,6 @@
 <?php
 
-namespace Nextpack\Nextpack;
+namespace PhpPlus\Core;
 
 /**
  * Class Sample
@@ -11,14 +11,14 @@ class Sample
 {
 
     /**
-     * @var  \Nextpack\Nextpack\Config
+     * @var  \PhpPlus\Core\Config
      */
     private $config;
 
     /**
      * Sample constructor.
      *
-     * @param \Nextpack\Nextpack\Config $config
+     * @param \PhpPlus\Core\Config $config
      */
     public function __construct(Config $config)
     {

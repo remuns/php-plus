@@ -1,18 +1,18 @@
 <?php
 
-namespace Nextpack\Nextpack\ServiceProviders;
+namespace PhpPlus\Core\ServiceProviders;
 
 use Illuminate\Support\ServiceProvider;
-use Nextpack\Nextpack\Contracts\SampleInterface;
-use Nextpack\Nextpack\Facades\SampleFacadeAccessor;
-use Nextpack\Nextpack\Sample;
+use PhpPlus\Core\Contracts\SampleInterface;
+use PhpPlus\Core\Facades\SampleFacadeAccessor;
+use PhpPlus\Core\Sample;
 
 /**
- * Class NextpackServiceProvider
+ * Class PhpPlusCoreServiceProvider
  *
- * @author  Mahmoud Zalt  <mahmoud@zalt.me>
+ * @author  Richard Munson  <remuns19@gmail.com>
  */
-class NextpackServiceProvider extends ServiceProvider
+class PhpPlusCoreServiceProvider extends ServiceProvider
 {
 
     /**
@@ -82,7 +82,7 @@ class NextpackServiceProvider extends ServiceProvider
     {
         // When users execute Laravel's vendor:publish command, the config file will be copied to the specified location
         $this->publishes([
-            __DIR__ . '/Config/nextpack.php' => config_path('nextpack.php'),
+            __DIR__ . '/Config/phpplus-core.php' => config_path('phpplus-core.php'),
         ]);
     }
 
@@ -91,8 +91,8 @@ class NextpackServiceProvider extends ServiceProvider
      */
     private function facadeBindings()
     {
-        // Register 'nextpack.say' instance container
-        $this->app['nextpack.sample'] = $this->app->share(function ($app) {
+        // Register 'phpplus.core.say' instance container
+        $this->app['phpplus.core.sample'] = $this->app->share(function ($app) {
             return $app->make(Sample::class);
         });
 

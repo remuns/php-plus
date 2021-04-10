@@ -1,37 +1,36 @@
 {
-  "name": "nextpack/nextpack",
-  "description": "Nextpack is a PHP Packages Framework (Starter Project)",
+  "name": "remuns/phpplus-core",
+  "description": "PHP-Plus is a standard core library containing auxiliary functionality for working with PHP.",
   "license": "MIT",
   "keywords": [
-    "NextPack",
-    "Starter"
+    "PHP-Plus"
   ],
   "authors": [
     {
-      "name": "Mahmoud Zalt",
-      "email": "mahmoud@zalt.me",
-      "homepage": "http://www.zalt.me",
+      "name": "Richard Munson",
+      "email": "remuns19@gmail.com",
+      "homepage": "https://github.com/remuns/",
       "role": "Coffee Maker :)"
     }
   ],
   "require": {
     "php": ">=5.4.0",
-    "illuminate/config": "5.2.*"
+    "illuminate/config": "5.2.*",
+    "phpunit/phpunit": "9.3"
   },
   "require-dev": {
-    "phpunit/phpunit": "4.*",
     "mockery/mockery": "0.*",
     "symfony/var-dumper": "2.*"
   },
   "autoload": {
     "psr-4": {
-      "Nextpack\\Nextpack\\": "src",
-      "Nextpack\\Library\\": "src/library"
+      "PhpPlus\\Core\\": "src",
+      "PhpPlus\\Core\\Library\\": "src/library"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Nextpack\\Nextpack\\Tests\\": "tests"
+      "PhpPlus\\Core\\Tests\\": "tests"
     }
   },
   "scripts": {

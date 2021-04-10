@@ -1,6 +1,6 @@
 <?php
 
-namespace Nextpack\Nextpack\Contracts;
+namespace PhpPlus\Core\Contracts;
 
 /**
  * Interface  SampleInterface
