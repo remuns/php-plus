@@ -2,14 +2,14 @@
 
 namespace PhpPlus\Core\Tests;
 
-use PHPUnit_Framework_TestCase as PHPUnit;
+use PHPUnit\Framework\TestCase as BaseTestCase;
 
 /**
  * Class TestCase
  *
  * @author  Mahmoud Zalt  <mahmoud@zalt.me>
  */
-class TestCase extends PHPUnit
+class TestCase extends BaseTestCase
 {
 
     public function __construct()
@@ -17,12 +17,12 @@ class TestCase extends PHPUnit
         parent::__construct();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
     }
