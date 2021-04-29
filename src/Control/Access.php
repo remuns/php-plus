@@ -111,7 +111,12 @@ final class Access
         } 
     }
 
-    private static function typeCheckSegment(string|array $accessSegment): void
+    /**
+     * Type-checks the access segment passed in.
+     * @param string|array $accessSegment   Either a string property name or an array containing
+     *                                      a string method name and additional arguments.
+     */
+    public static function typeCheckSegment(string|array $accessSegment): void
     {
         if (is_array($accessSegment)) {
             if (count($accessSegment) === 0 || !is_string($accessSegment[0])) {
