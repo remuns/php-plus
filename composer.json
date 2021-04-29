@@ -26,7 +26,10 @@
     "psr-4": {
       "PhpPlus\\Core\\": "src",
       "PhpPlus\\Core\\Library\\": "src/library"
-    }
+    },
+    "files": [
+      "src/top-level.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
