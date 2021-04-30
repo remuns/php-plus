@@ -102,13 +102,7 @@ final class Access
             return $val->$accessSegment;
         } else {
             if ($typeCheck) { self::typeCheckFuncSegment($accessSegment); }
-
-            if (count($accessSegment) === 1) {
-                return $val->{$accessSegment[0]}();
-            } else {
-                return call_user_func_array(
-                        [$val, $accessSegment[0]], array_slice($accessSegment, 1));
-            }
+            return $val->{$accessSegment[0]}(...array_slice($accessSegment, 1));
         } 
     }
 
