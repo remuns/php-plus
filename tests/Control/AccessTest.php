@@ -4,7 +4,6 @@ namespace PhpPlus\Core\Tests\Control
 {
     use PhpPlus\Core\Control\Access;
     use PhpPlus\Core\Tests\Control\AccessTest\Test1;
-    use PhpPlus\Core\Tests\Control\AccessTest\Test2;
     use PhpPlus\Core\Tests\TestCase;
 
     /**
@@ -50,6 +49,21 @@ namespace PhpPlus\Core\Tests\Control
             $this->assertFalse(Access::accessArray($o, ['boolVal']));
             $this->assertTrue(Access::accessArray($o, [['getTest2'], 'boolVal']));
             $this->assertSame(3, Access::accessArray($o, [['getTest2'], ['getVal']]));
+        }
+
+        /**
+         * Tests the {@see Access::arrayNullable()} method.
+         */
+        public function testArrayNullable()
+        {
+            // Create a test array to access
+            $a = [0, 1, 'f' => [2, 3]];
+
+            $this->assertSame(0, Access::arrayNullable($a, 0));
+            $this->assertSame(1, Access::arrayNullable($a, 1));
+            $this->assertSame(3, Access::arrayNullable($a, 'f', 1));
+
+            $this->assertNull(Access::arrayNullable($a, 'g', 'h', 4, 'i'));
         }
     }
 }

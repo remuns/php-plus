@@ -4,6 +4,7 @@ namespace PhpPlus\Core\Control;
 
 use PhpPlus\Core\Traits\StaticClassTrait;
 
+use ArrayAccess;
 use TypeError;
 
 /**
@@ -131,6 +132,62 @@ final class Access
         if (count($accessSegment) === 0 || !is_string($accessSegment[0])) {
             throw new TypeError(
                 'expected an array with a string method name as its first value');
+        }
+    }
+
+    /**
+     * Accesses an array, returning null if the access fails.
+     * 
+     * @param array|ArrayAccess $array      The array to acccess.
+     * @param string|int        ...$props   A param array of string and integer property names and
+     *                                      indexes indicating the access to perform.
+     * 
+     * @return mixed    The array passed in if the property list is empty. Otherwise, the value
+     *                  returned if the properties indicated are defined, and null if any property
+     *                  is not defined.
+     */
+    public static function arrayNullable(array|ArrayAccess $array, string|int ...$props): mixed
+    {
+        return self::arrayNullableArray($array, $props);
+    }
+
+    /**
+     * Accesses an array, returning null if the access fails.
+     * 
+     * @param array|ArrayAccess $array  The array to acccess.
+     * @param (string|int)[]    $props  An array of string and integer property names and indexes
+     *                                  indicating the access to perform.
+     * 
+     * @return mixed    The array passed in if the property list is empty. Otherwise, the value
+     *                  returned if the properties indicated are defined, and null if any property
+     *                  is not defined.
+     */
+
+    public static function arrayNullableArray(array|ArrayAccess $array, array $props): mixed
+    {
+        self::typeCheckArrayNullableArray($props);
+
+        // Get the value indicated by the property list passed in, or null if any property
+        // is not defined
+        $val = $array;
+        foreach ($props as $prop) {
+            if (isset($val[$prop])) {
+                $val = $val[$prop];
+            } else {
+                $val = null;
+                break;
+            }
+        }
+        return $val;
+    }
+
+    private static function typeCheckArrayNullableArray(array $props)
+    {
+        foreach ($props as $val) {
+            $type = gettype($val);
+            if ($type !== 'string' && $type !== 'integer') {
+                throw new TypeError("expected string or integer array property, got {$type}");
+            }
         }
     }
 }
