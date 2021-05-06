@@ -2,7 +2,7 @@
 
 namespace PhpPlus\Core\Tests\Control
 {
-    use PhpPlus\Core\Control\Access;
+    use PhpPlus\Core\Control\Access\Access;
     use PhpPlus\Core\Tests\Control\AccessTest\Test1;
     use PhpPlus\Core\Tests\TestCase;
 
@@ -14,56 +14,104 @@ namespace PhpPlus\Core\Tests\Control
     class AccessTest extends TestCase
     {
         /**
-         * Tests the Access::accessOnce() method.
-         * @see Access::accessOnce()
-         */
-        public function testAccessOnce()
-        {
-            $o = new Test1;
-            $this->assertFalse(Access::accessOnce($o, 'boolVal'));
-            $this->assertEquals(1, Access::accessOnce($o, ['get1']));
-            $this->assertEquals(10, Access::accessOnce($o, ['returnSum', 1, 2, 3, 4]));
-        }
-
-        /**
-         * Tests the Access::access() method.
-         * @see Access::access()
+         * Tests the {@see Access::access()} method.
          */
         public function testAccess()
         {
             $o = new Test1;
-            $this->assertSame(4, Access::access($o, 'class', 'a'));
-            $this->assertFalse(Access::access($o, 'boolVal'));
-            $this->assertTrue(Access::access($o, ['getTest2'], 'boolVal'));
+            $this->assertSame(4, Access::access($o, '->class', '->a'));
+            $this->assertFalse(Access::access($o, '->boolVal'));
+            $this->assertTrue(Access::access($o, ['getTest2'], '->boolVal'));
             $this->assertSame(3, Access::access($o, ['getTest2'], ['getVal']));
+            $this->assertSame(1, Access::access($o, '->class', '->c', 0));
         }
 
         /**
-         * Tests the Access::accessArray() method.
-         * @see Access::accessArray()
+         * Tests the {@see Access::accessNullable()} method.
          */
-        public function testAccessArray()
+        public function testAccessNullable()
         {
             $o = new Test1;
-            $this->assertSame(4, Access::accessArray($o, ['class', 'a']));
-            $this->assertFalse(Access::accessArray($o, ['boolVal']));
-            $this->assertTrue(Access::accessArray($o, [['getTest2'], 'boolVal']));
-            $this->assertSame(3, Access::accessArray($o, [['getTest2'], ['getVal']]));
+            $this->assertSame(4, Access::accessNullable($o, '->class', '->a'));
+            $this->assertFalse(Access::accessNullable($o, '->boolVal'));
+            $this->assertTrue(Access::accessNullable($o, ['getTest2'], '->boolVal'));
+            $this->assertSame(3, Access::accessNullable($o, ['getTest2'], ['getVal']));
+            $this->assertSame(1, Access::accessNullable($o, '->class', '->c', 0));
+
+            // The getNull() method call will return null, so the access will stop there
+            $this->assertNull(Access::accessNullable($o, ['getNull'], 5, '->a'));
         }
 
         /**
-         * Tests the {@see Access::arrayNullable()} method.
+         * Tests the {@see Access::accessAccessible()} method.
          */
-        public function testArrayNullable()
+        public function testAccessAccessible()
         {
-            // Create a test array to access
-            $a = [0, 1, 'f' => [2, 3]];
+            $o = new Test1;
+            $this->assertSame(4, Access::accessAccessible($o, '->class', '->a'));
+            $this->assertFalse(Access::accessAccessible($o, '->boolVal'));
+            $this->assertTrue(Access::accessAccessible($o, ['getTest2'], '->boolVal'));
+            $this->assertSame(3, Access::accessAccessible($o, ['getTest2'], ['getVal']));
+            $this->assertSame(1, Access::accessAccessible($o, '->class', '->c', 0));
 
-            $this->assertSame(0, Access::arrayNullable($a, 0));
-            $this->assertSame(1, Access::arrayNullable($a, 1));
-            $this->assertSame(3, Access::arrayNullable($a, 'f', 1));
+            // The getNull() method call will return null, so the access should stop and return
+            // null when another access is attempted
+            $this->assertNull(Access::accessAccessible($o, ['getNull'], 5, '->a'));
 
-            $this->assertNull(Access::arrayNullable($a, 'g', 'h', 4, 'i'));
+            // The access should stop and return null when an attempt is made to access an array
+            // as if it were an object ($o->class->c)
+            $this->assertNull(Access::accessAccessible($o, '->class', '->c', '->d'));
+
+            // The access should stop and return null when an attempt is made to access a
+            // non-array-accessible object with an array offset ($o->class)
+            $this->assertNull(Access::accessAccessible($o, '->class', 1, 2));
+
+            // The access should stop and return null when an attempt is made to access a
+            // method on an array ($o->class->c)
+            $this->assertNull(
+                Access::accessAccessible($o, '->class', '->c', ['notAMethod', 2, 3], 5));
+        }
+
+        /**
+         * Tests the {@see Access::accessDefined()} method.
+         */
+        public function testAccessDefined()
+        {
+            $o = new Test1;
+            $this->assertSame(4, Access::accessDefined($o, '->class', '->a'));
+            $this->assertFalse(Access::accessDefined($o, '->boolVal'));
+            $this->assertTrue(Access::accessDefined($o, ['getTest2'], '->boolVal'));
+            $this->assertSame(3, Access::accessDefined($o, ['getTest2'], ['getVal']));
+            $this->assertSame(1, Access::accessDefined($o, '->class', '->c', 0));
+
+            // The getNull() method call will return null, so the access should stop and return
+            // null when another access is attempted
+            $this->assertNull(Access::accessDefined($o, ['getNull'], 5, '->a'));
+
+            // The access should stop and return null when an attempt is made to access an array
+            // as if it were an object ($o->class->c)
+            $this->assertNull(Access::accessDefined($o, '->class', '->c', '->d'));
+
+            // The access should stop and return null when an attempt is made to access a
+            // non-array-accessible object with an array offset ($o->class)
+            $this->assertNull(Access::accessDefined($o, '->class', 1, 2));
+
+            // The access should stop and return null when an attempt is made to access a
+            // method on an array ($o->class->c)
+            $this->assertNull(
+                Access::accessDefined($o, '->class', '->c', ['notAMethod', 2, 3], 5));
+
+            // The access should stop and return null on attempts to access undefined properties
+            // on an object ($o)
+            $this->assertNull(Access::accessDefined($o, '->class2'));
+
+            // The access should stop and return null on attempts to access undefined methods
+            // on an object ($o)
+            $this->assertNull(Access::accessDefined($o, ['notAMethod', 4, 5], '->h'));
+
+            // The access should stop and return null on attempts to access undefined offsets
+            // on an array ($o->class->c)
+            $this->assertNull(Access::accessDefined($o, '->class', '->c', 3, '->g'));
         }
     }
 }
@@ -75,6 +123,8 @@ namespace PhpPlus\Core\Tests\Control\AccessTest
         public function get1(): int { return 1; }
         public function getTest2(): Test2 { return new Test2; }
 
+        public function getNull() { return null; }
+
         public function returnSum(int ...$args)
         { 
             return array_reduce($args, fn($a, $b) => $a + $b);
@@ -85,7 +135,7 @@ namespace PhpPlus\Core\Tests\Control\AccessTest
 
         public function __construct()
         {
-            $this->class = (object)['a' => 4, 'b' => 5];
+            $this->class = (object)['a' => 4, 'b' => 5, 'c' => [1, 2]];
         }
     }
 
