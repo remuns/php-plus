@@ -5,6 +5,7 @@ namespace PhpPlus\Core\Control;
 use Illuminate\Support\Arr as BaseArr;
 
 use PhpPlus\Core\Traits\StaticClassTrait;
+use PhpPlus\Core\Traits\WellDefinedStatic;
 
 /**
  * A static class offering array helper methods.
@@ -16,6 +17,7 @@ use PhpPlus\Core\Traits\StaticClassTrait;
 class Arr extends BaseArr
 {
     use StaticClassTrait;
+    use WellDefinedStatic;
 
     /**
      * Zips the arrays passed in together into a single array.
