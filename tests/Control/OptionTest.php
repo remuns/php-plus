@@ -78,10 +78,10 @@ namespace PhpPlus\Core\Tests\Control
             $obj->a->c = 2;
 
             $opt = Option::some($obj);
-            $this->assertHasStrict($opt->access('a', ['add1', 3]), 4);
+            $this->assertHasStrict($opt->access('a', ['add1',[3]]), 4);
             $this->assertHasStrict($opt->access('a', 'c'), 2);
             $this->assertIsNone(
-                Option::none()->access('these', 'dont', ['matter', 'in', 'this', 'case']));
+                Option::none()->access('these', 'dont', ['matter',['in', 'this', 'case']]));
         }
 
         public function testApply_success()
@@ -132,7 +132,7 @@ namespace PhpPlus\Core\Tests\Control
             $obj->c->d = null;
 
             $opt = Option::some($obj);
-            $this->assertHasStrict($opt->accessNullable('a', ['add1', 4]), 5);
+            $this->assertHasStrict($opt->accessNullable('a', ['add1',[4]]), 5);
             $this->assertHasStrict($opt->accessNullable('b'), 4);
 
             // This will hit null and stop evaluating
@@ -150,7 +150,7 @@ namespace PhpPlus\Core\Tests\Control
             $obj->c->d = 0;
 
             $opt = Option::some($obj);
-            $this->assertHasStrict($opt->accessFalsy('a', ['add1', 4]), 5);
+            $this->assertHasStrict($opt->accessFalsy('a', ['add1',[4]]), 5);
             $this->assertHasStrict($opt->accessFalsy('b'), 4);
 
             // This will hit a false-equivalent value and stop evaluating

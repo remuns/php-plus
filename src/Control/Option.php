@@ -2,7 +2,8 @@
 
 namespace PhpPlus\Core\Control;
 
-use PhpPlus\Core\Control\Access;
+use PhpPlus\Core\Control\Access\Access;
+use PhpPlus\Core\Control\Access\AccessSegment;
 use PhpPlus\Core\Exceptions\InvalidOperationException;
 use PhpPlus\Core\Traits\StaticConstructibleTrait;
 use PhpPlus\Core\Traits\WellDefinedSelf;
@@ -145,16 +146,15 @@ final class Option
     }
 
     /**
-     * Allows a wrapped object to be accessed via (string) property names and (array) method
-     * descriptions.
+     * Allows a wrapped value to be accessed via access segment descriptions.
      * 
-     * @param string|array ...$accessSegments   A param array of access segments to use to access
-     *                                          the object.
+     * @param string|array|AccessSegment ...$accessSegments A list of access segments to use to
+     *                                                      access the object.
      * 
      * @return self An option wrapping the result of the access, or Option::none() if the option
      *              passed in was empty.
      */
-    public function access(string|array ...$accessSegments): self
+    public function access(string|array|AccessSegment ...$accessSegments): self
     {
         return $this->isSome ?
                 self::some(Access::access($this->value, ...$accessSegments)) :
@@ -213,55 +213,52 @@ final class Option
     }
 
     /**
-     * Allows a wrapped object to be accessed via (string) property names and (array) method
-     * descriptions, collapsing null values to Option::none().
+     * Allows a wrapped value to be accessed via access segment descriptions, collapsing null
+     * values to Option::none().
      * 
-     * @param string|array $accessSegments A list of access segments to use to access the object.
+     * @param string|array|AccessSegment ...$accessSegments A list of access segments to use to
+     *                                                      access the object.
      * 
      * @return self An option wrapping the result of the access, or Option::none() if the option
      *              passed in was empty OR if a null value was encountered.
+     * 
+     * @see AccessSegment
+     * @see Access
      */
-    public function accessNullable(string|array ...$accessSegments): self
+    public function accessNullable(string|array|AccessSegment ...$accessSegments): self
     {
         if ($this->isSome) {
-            // Type-check before allowing the procedure to continue
-            array_walk($accessSegments, Access::class.'::typeCheckSegment');
-
             // Perform the access
-            $newVal = $this->value;
-            foreach ($accessSegments as $seg) {
-                $newVal = Access::accessOnce($newVal, $seg);
-                if ($newVal === null) {
-                    // Collapse null values immediately without evaluating the rest of the
-                    // segment chain
-                    return self::$none;
-                }
-            }
-            return self::some($newVal);
+            $accessed = Access::accessNullable($this->value, ...$accessSegments);
+            return $accessed === null ? self::$none : self::some($accessed);
         } else {
             return self::$none;
         }
     }
 
     /**
-     * Allows a wrapped object to be accessed via (string) property names and (array) method
-     * descriptions, collapsing values equivalent to false to Option::none().
+     * Allows a wrapped value to be accessed via access segment descriptions, collapsing values
+     * equivalent to false to Option::none().
      * 
-     * @param string|array $accessSegments A list of access segments to use to access the object.
+     * @param string|array|AccessSegment ...$accessSegments A list of access segments to use to
+     *                                                      access the object.
      * 
      * @return self An option wrapping the result of the access, or Option::none() if the option
      *              passed in was empty OR if a value equivalent to false was encountered.
+     * 
+     * @see AccessSegment
+     * @see Access
      */
     public function accessFalsy(string|array ...$accessSegments): self
     {
         if ($this->isSome) {
             // Type-check before allowing the procedure to continue
-            array_walk($accessSegments, Access::class.'::typeCheckSegment');
+            $accessSegments = array_map(AccessSegment::class.'::create', $accessSegments);
 
             // Perform the access
             $newVal = $this->value;
             foreach ($accessSegments as $seg) {
-                $newVal = Access::accessOnce($newVal, $seg);
+                $newVal = Access::access($newVal, $seg);
                 if (!$newVal) {
                     // Collapse falsy values immediately without evaluating the rest of the
                     // segment chain

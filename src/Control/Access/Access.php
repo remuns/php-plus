@@ -16,7 +16,7 @@ final class Access
      * Accesses an object or array using a series of method, property or offset segments.
      * 
      * @param array|object                      $val    The item to access.
-     * @param AccessSegment|array|string|int    ...$accessSegments
+     * @param AccessSegment|array|string    ...$accessSegments
      *                                              A parameter array of values describing the
      *                                              access to make.
      *                                              If a property is desired, such a value should
@@ -25,12 +25,15 @@ final class Access
      *                                              array containing the string name of the method
      *                                              as the first element, with the arguments
      *                                              included as subsequent array elements.
+     *                                              If an array or ArrayAccess offset is desired,
+     *                                              this should be an array containing only the
+     *                                              offset to be accessed.
      *                                              An already-made access segment can also
      *                                              be included.
      * @return mixed The result of the access.
      */
     public static function access(
-        array|object $val, AccessSegment|array|string|int ...$accessSegments)
+        array|object $val, AccessSegment|array|string ...$accessSegments)
     {
         // Parse anything that isn't already an access segment before proceeding
         // We want to parse first so that no exception or error can be thrown due to an
@@ -49,7 +52,7 @@ final class Access
      * returning null if any null values are encountered rather than continuing the access.
      * 
      * @param array|object                      $val    The item to access.
-     * @param AccessSegment|array|string|int    ...$accessSegments
+     * @param AccessSegment|array|string    ...$accessSegments
      *                                              A parameter array of values describing the
      *                                              access to make.
      *                                              If a property is desired, such a value should
@@ -58,12 +61,15 @@ final class Access
      *                                              array containing the string name of the method
      *                                              as the first element, with the arguments
      *                                              included as subsequent array elements.
+     *                                              If an array or ArrayAccess offset is desired,
+     *                                              this should be an array containing only the
+     *                                              offset to be accessed.
      *                                              An already-made access segment can also
      *                                              be included.
      * @return mixed The result of the access, or null if it was encountered during the access.
      */
     public static function accessNullable(
-        array|object $val, AccessSegment|array|string|int ...$accessSegments)
+        array|object $val, AccessSegment|array|string ...$accessSegments)
     {
         // Parse anything that isn't already an access segment before proceeding
         // We want to parse first so that no exception or error can be thrown due to an
@@ -90,7 +96,7 @@ final class Access
      * 
      * 
      * @param array|object                      $val    The item to access.
-     * @param AccessSegment|array|string|int    ...$accessSegments
+     * @param AccessSegment|array|string    ...$accessSegments
      *                                              A parameter array of values describing the
      *                                              access to make.
      *                                              If a property is desired, such a value should
@@ -99,13 +105,16 @@ final class Access
      *                                              array containing the string name of the method
      *                                              as the first element, with the arguments
      *                                              included as subsequent array elements.
+     *                                              If an array or ArrayAccess offset is desired,
+     *                                              this should be an array containing only the
+     *                                              offset to be accessed.
      *                                              An already-made access segment can also
      *                                              be included.
      * @return mixed    The result of the access, or null if any non-accessible value was
      *                  encountered during the access.
      */
     public static function accessAccessible(
-        array|object $val, AccessSegment|array|string|int ...$accessSegments)
+        array|object $val, AccessSegment|array|string ...$accessSegments)
     {
         // Parse anything that isn't already an access segment before proceeding
         // We want to parse first so that no exception or error can be thrown due to an
@@ -133,7 +142,7 @@ final class Access
      * access a non-object or array, null will similarly be returned.
      * 
      * @param array|object                      $val    The item to access.
-     * @param AccessSegment|array|string|int    ...$accessSegments
+     * @param AccessSegment|array|string    ...$accessSegments
      *                                              A parameter array of values describing the
      *                                              access to make.
      *                                              If a property is desired, such a value should
@@ -142,13 +151,16 @@ final class Access
      *                                              array containing the string name of the method
      *                                              as the first element, with the arguments
      *                                              included as subsequent array elements.
+     *                                              If an array or ArrayAccess offset is desired,
+     *                                              this should be an array containing only the
+     *                                              offset to be accessed.
      *                                              An already-made access segment can also
      *                                              be included.
      * @return mixed    The result of the access, or null if any value for which access is not
      *                  defined is encountered during the access.
      */
     public static function accessDefined(
-        array|object $val, AccessSegment|array|string|int ...$accessSegments)
+        array|object $val, AccessSegment|array|string ...$accessSegments)
     {
         // Parse anything that isn't already an access segment before proceeding
         // We want to parse first so that no exception or error can be thrown due to an
