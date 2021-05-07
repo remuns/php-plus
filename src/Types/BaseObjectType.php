@@ -14,15 +14,6 @@ final class BaseObjectType extends ObjectType implements PrimitiveTypeInterface
     use NonTrivialTypeTrait;
     use PrimitiveTypeTrait;
 
-    public function compare(Type $other): ?int
-    {
-        if ($other->typeIndicator() == Type::OBJECT_INDICATOR) {
-            return $other == $this ? 0 : 1;
-        } else {
-            return $other->handleTrivialCompareCases();
-        }
-    }
-
     public function __toString(): string { return 'object'; }
 
     public function has($item): bool { return is_object($item); }

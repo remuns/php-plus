@@ -12,11 +12,9 @@ trait SimplePrimitiveTypeTrait
     
     public function compare(Type $other): ?int
     {
-        if ($this->typeIndicator() == $other->typeIndicator()) {
-            return 0;
-        } else {
-            return $other->handleTrivialCompareCases();
-        }
+        return $this->typeIndicator() === $other->typeIndicator() ?
+                0 :
+                $other->handleTrivialCompareCases();
     }
 
     public abstract function typeIndicator(): int;
