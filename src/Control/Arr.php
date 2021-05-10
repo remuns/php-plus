@@ -69,7 +69,7 @@ class Arr extends BaseArr
      * 
      * @return bool Whether or not the array passed the type-check.
      * 
-     * @throws PhpPlusTypeError The array failed the type-check and $throw was `true`.
+     * @throws PhpPlusTypeError The array failed the type-check and `$throw` was `true`.
      */
     public static function typeCheck(array $array, Type $type, bool $throw = false)
     {
