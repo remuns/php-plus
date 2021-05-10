@@ -17,8 +17,12 @@ trait StaticConstructibleTrait
      * 
      * To provide static initialization, implement the {@see self::__initStatic()} abstract method,
      * which will be called internally by this method.
+     * 
+     * This method should not be overridden.
+     * 
+     * @internal
      */
-    public static final function __constructStatic(): void
+    public static function __constructStatic(): void
     {
         // Initialize the class if it has yet to be initialized
         if (!self::$private_isInitializedIndicator) {

@@ -2,6 +2,7 @@
 
 namespace PhpPlus\Core\Types;
 
+use PhpPlus\Core\Traits\StaticConstructibleTrait;
 use PhpPlus\Core\Traits\WellDefinedStatic;
 
 /**
@@ -9,10 +10,10 @@ use PhpPlus\Core\Traits\WellDefinedStatic;
  */
 abstract class Type
 {
-    use WellDefinedStatic;
+    use StaticConstructibleTrait, WellDefinedStatic;
 
     ///////////////////////////////////////////////////////////////////////////
-    /// ^Constants
+    /// ^StaticProperties
     ///////////////////////////////////////////////////////////////////////////
     public const INTERSECTION_INDICATOR = -4;
     public const UNION_INDICATOR = -2;
@@ -26,16 +27,25 @@ abstract class Type
     public const OBJECT_INDICATOR = 32;
     public const RESOURCE_INDICATOR = 64;
     public const STRING_INDICATOR = 128;
+
+    /**
+     * A type describing the type of this class.
+     */
+    private static self $meta;
     ///////////////////////////////////////////////////////////////////////////
-    /// $Constants
+    /// $StaticProperties
     ///////////////////////////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////////////////////////
-    /// ^Constructor
+    /// ^Constructors
     ///////////////////////////////////////////////////////////////////////////
     protected function __construct() { }
+
+    protected static function __initStatic(): void {
+        self::$meta = new ClassType(self::class);
+    }
     ///////////////////////////////////////////////////////////////////////////
-    /// $Constructor
+    /// $Constructors
     ///////////////////////////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////////////////////////
@@ -159,6 +169,12 @@ abstract class Type
      * @return IntType
      */
     public static final function int(): IntType { return IntType::value(); }
+
+    /**
+     * Returns the type of the {@see self} class.
+     * @return ClassType
+     */
+    public static final function meta(): ClassType { return self::$meta; }
 
     /**
      * Returns the "NULL" type.
