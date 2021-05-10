@@ -7,7 +7,18 @@ namespace PhpPlus\Core\Traits;
  */
 trait StaticConstructibleTrait
 {
-    private static bool $private_isInitializedIndicator = false;
+    /**
+     * A boolean flag indicating whether static initialization has been completed for the class.
+     * 
+     * Random digits are appended to the end of the name to help ensure that no clashes occur
+     * with any user-defined static properties.
+     * 
+     * This should not be overridden or touched in user code.
+     * 
+     * @var bool
+     * @internal
+     */
+    private static bool $private_isInitializedIndicator_edbaZJGJySop2hBmiJvl = false;
 
     /**
      * Sets up the class before interaction.
@@ -25,9 +36,9 @@ trait StaticConstructibleTrait
     public static function __constructStatic(): void
     {
         // Initialize the class if it has yet to be initialized
-        if (!self::$private_isInitializedIndicator) {
-            self::$private_isInitializedIndicator = true;
-            self::__initStatic();
+        if (!static::$private_isInitializedIndicator_edbaZJGJySop2hBmiJvl) {
+            static::$private_isInitializedIndicator_edbaZJGJySop2hBmiJvl = true;
+            static::__initStatic();
         } // Otherwise do nothing
     }
 
