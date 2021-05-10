@@ -58,4 +58,31 @@ class Arr extends BaseArr
         }
         return $result;
     }
+
+    /**
+     * Type-checks the array passed in to ensure all arguments are of the specified type.
+     * 
+     * @param array $array  The array to type-check.
+     * @param Type  $type   The type to check the array elements for.
+     * @param bool  $throw  Whether or not to throw a {@see PhpPlusTypeError} on
+     *                      type-check failure.
+     * 
+     * @return bool Whether or not the array passed the type-check.
+     * 
+     * @throws PhpPlusTypeError The array failed the type-check and $throw was `true`.
+     */
+    public static function typeCheck(array $array, Type $type, bool $throw = false)
+    {
+        foreach ($array as $val) {
+            if (!$type->has($val)) {
+                if ($throw) {
+                    throw new PhpPlusTypeError(
+                        "expected array element to be an instance of type {$type}");
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
