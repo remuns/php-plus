@@ -171,12 +171,6 @@ abstract class Type
     public static final function int(): IntType { return IntType::value(); }
 
     /**
-     * Returns the type of the {@see self} class.
-     * @return ClassType
-     */
-    public static final function meta(): ClassType { return self::$meta; }
-
-    /**
      * Returns the "NULL" type.
      * @return NullType
      */
