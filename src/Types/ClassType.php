@@ -49,7 +49,7 @@ final class ClassType extends ObjectType implements NonTrivialTypeInterface
         return new ReflectionClass($this->name);
     }
 
-    public function has($item): bool { return is_a($item, $this->name); }
+    public function has($item): bool { return $item instanceof $this->name; }
 
     /**
      * Compares the two classes passed in, returning a nullable integer representing the
