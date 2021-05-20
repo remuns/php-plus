@@ -6,6 +6,9 @@ use Illuminate\Support\Arr as BaseArr;
 
 use PhpPlus\Core\Traits\StaticClassTrait;
 use PhpPlus\Core\Traits\WellDefinedStatic;
+use PhpPlus\Core\Types\PhpPlusTypeError;
+use PhpPlus\Core\Types\Type;
+use PhpPlus\Core\Types\Types;
 
 /**
  * A static class offering array helper methods.
@@ -60,6 +63,76 @@ class Arr extends BaseArr
     }
 
     /**
+     * Type-checks the array passed in based on an array of type arguments that describe the
+     * structure of the array.
+     * 
+     * This method type-checks the array as a loose comparison, i.e. the order of the keys
+     * checked does not matter.
+     * 
+     * @param array     $array  The array to type-check.
+     * @param Type[]    $types  An array of keys mapped to types to check for.
+     *                          The keys should correspond to keys in the $array argument.
+     * @param bool      $allowAdditionalValues
+     *                      Whether or not to allow (non-type-checked) keys in the array
+     *                      passed in that will be ignored. Defaults to `false`.
+     * @param bool      $throw  Whether or not to throw a {@see PhpPlusTypeError} on type-check
+     *                          failure.  Defaults to `false`.
+     * 
+     * @return bool Whether or not the array passed the type-check.
+     * 
+     * @throws PhpPlusTypeError The array failed the type-check and `$throw` was `true`.
+     */
+    public static function typeCheckLooseStructure(
+        array $array, array $types, bool $allowAdditionalValues = false, bool $throw = false): bool
+    {
+        // Ensure that the type array passed in contains types
+        // This type check should always throw if it fails
+        self::typeCheck($types, Types::meta(), throw: true);
+
+        $arrayArrayKeys = array_keys($array);
+        $typeArrayKeys = array_keys($types);
+        
+        if ($allowAdditionalValues) {
+            // Ensure that the type array keys are a subset of the array keys, or else the
+            // type-check cannot possibly succeed
+            if (!empty(array_diff($typeArrayKeys, $arrayArrayKeys))) {
+                return $throw ?
+                        false :
+                        throw new PhpPlusTypeError(
+                            'the type array argument had some keys that were not present in ' .
+                                'the array argument');
+            }
+        } else {
+            // Ensure the keys of the array and type array match exactly
+            if (self::sortReturn($arrayArrayKeys) != self::sortReturn($typeArrayKeys))
+            {
+                return $throw ?
+                        false :
+                        throw new PhpPlusTypeError(
+                            'the array argument and the type array argument had some keys ' .
+                                'that did not match');
+            }
+        }
+
+        // Check all the values of the array by key
+        foreach ($array as $key => $value) {
+            // Check the type if the type array offset exists
+            // Don't bother doing anything otherwise; if additional values are not allowed then
+            // the method would have returned / errored out by now
+            if (isset($types[$key])) {
+                $type = $types[$key];
+                if (!$type->has($value)) {
+                    return $throw ?
+                            false :
+                            throw new PhpPlusTypeError(
+                                "array value did not match expected type {$type}");
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * Type-checks the array passed in to ensure all arguments are of the specified type.
      * 
      * @param array $array  The array to type-check.
@@ -84,5 +157,19 @@ class Arr extends BaseArr
             }
         }
         return true;
+    }
+
+    /**
+     * Returns the result of sorting the array using the {@see sort()} function, but returning
+     * the result rather than passing the array by reference.
+     * 
+     * @param array $arr The array to sort.
+     * @return array
+     */
+    public static function sortReturn(array $arr): array
+    {
+        $ret = $arr;
+        sort($ret);
+        return $ret;
     }
 }
