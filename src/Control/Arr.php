@@ -97,20 +97,20 @@ class Arr extends BaseArr
             // type-check cannot possibly succeed
             if (!empty(array_diff($typeArrayKeys, $arrayArrayKeys))) {
                 return $throw ?
-                        false :
                         throw new PhpPlusTypeError(
                             'the type array argument had some keys that were not present in ' .
-                                'the array argument');
+                                'the array argument') :
+                        false;
             }
         } else {
             // Ensure the keys of the array and type array match exactly
             if (self::sortReturn($arrayArrayKeys) != self::sortReturn($typeArrayKeys))
             {
                 return $throw ?
-                        false :
                         throw new PhpPlusTypeError(
                             'the array argument and the type array argument had some keys ' .
-                                'that did not match');
+                                'that did not match') :
+                        false;
             }
         }
 
@@ -123,9 +123,9 @@ class Arr extends BaseArr
                 $type = $types[$key];
                 if (!$type->has($value)) {
                     return $throw ?
-                            false :
-                            throw new PhpPlusTypeError(
-                                "array value did not match expected type {$type}");
+                        throw new PhpPlusTypeError(
+                            "array value did not match expected type {$type}") :
+                        false;
                 }
             }
         }
