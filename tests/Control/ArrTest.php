@@ -59,4 +59,126 @@ class ArrTest extends TestCase
         $this->assertTrue(Arr::typeCheck([null, null], Type::null(), throw: true));
         Arr::typeCheck([5, 6], Type::float(), throw: true); // Should fail
     }
+
+    /**
+     * Tests the {@see Arr::typeCheckLooseStructure} method with no extra arguments allowed when
+     * a value is returned on failure.
+     */
+    public function testTypeCheckLooseStructure_noExtras_return()
+    {
+        $intType = Type::int();
+        $strType = Type::string();
+        $floatType = Type::float();
+
+        $this->assertTrue(
+            Arr::typeCheckLooseStructure(
+                [ 1, 2, 'f', 'g', 6.7 ],
+                [ $intType, $intType, $strType, $strType, $floatType ]));
+
+        $this->assertTrue(
+            Arr::typeCheckLooseStructure(
+                [ 1, 2 => 'f', 1 => 4.5 ],
+                [ $intType, $floatType, $strType ]));
+
+        $this->assertFalse(
+            Arr::typeCheckLooseStructure(
+                [ 1, 2, 'f' ], [ $intType, $intType, $intType ]));
+
+        // Will fail because there is an extra argument
+        $this->assertFalse(
+            Arr::typeCheckLooseStructure(
+                [ 1, 2, 3, 'f' ], [ $intType, $intType, $intType ]));
+    }
+
+    /**
+     * Tests the {@see Arr::typeCheckLooseStructure} method with no extra arguments allowed when
+     * an error is thrown on failure.
+     */
+    public function testTypeCheckLooseStructure_noExtras_throw()
+    {
+        $this->expectException(Error::class);
+
+        $intType = Type::int();
+        $strType = Type::string();
+        $floatType = Type::float();
+
+        $this->assertTrue(
+            Arr::typeCheckLooseStructure(
+                [ 1, 2, 'f', 'g', 6.7 ],
+                [ $intType, $intType, $strType, $strType, $floatType ],
+                throw: true));
+
+        $this->assertTrue(
+            Arr::typeCheckLooseStructure(
+                [ 1, 2 => 'f', 1 => 4.5 ],
+                [ $intType, $floatType, $strType ],
+                throw: true));
+
+        // Should fail
+        Arr::typeCheckLooseStructure(
+            [ 1, 2, 'f' ], [ $intType, $intType, $intType ], throw: true);
+    }
+
+    /**
+     * Tests the {@see Arr::typeCheckLooseStructure} method with no extra arguments allowed when
+     * a value is returned on failure.
+     */
+    public function testTypeCheckLooseStructure_extras_return()
+    {
+        $intType = Type::int();
+        $strType = Type::string();
+        $floatType = Type::float();
+
+        $this->assertTrue(
+            Arr::typeCheckLooseStructure(
+                [ 1, 2, 'f', 'g', 6.7, 8.3, 'y' ],
+                [ $intType, $intType, $strType, $strType, $floatType ],
+                allowAdditionalValues: true));
+
+        $this->assertTrue(
+            Arr::typeCheckLooseStructure(
+                [ 1, 2 => 'f', 5 => null, 1 => 4.5 ],
+                [ $intType, $floatType, $strType, ],
+                allowAdditionalValues: true));
+
+        $this->assertFalse(
+            Arr::typeCheckLooseStructure(
+                [ 1, 2, 'f', 'g' ],
+                [ $intType, $intType, $intType ],
+                allowAdditionalValues: true));
+    }
+
+    /**
+     * Tests the {@see Arr::typeCheckLooseStructure} method with no extra arguments allowed when
+     * an error is thrown on failure.
+     */
+    public function testTypeCheckLooseStructure_extras_throw()
+    {
+        $this->expectException(Error::class);
+
+        $intType = Type::int();
+        $strType = Type::string();
+        $floatType = Type::float();
+
+        $this->assertTrue(
+            Arr::typeCheckLooseStructure(
+                [ 1, 2, 'f', 'g', 6.7, 8.3, 'y' ],
+                [ $intType, $intType, $strType, $strType, $floatType ],
+                allowAdditionalValues: true,
+                throw: true));
+
+        $this->assertTrue(
+            Arr::typeCheckLooseStructure(
+                [ 1, 2 => 'f', 5 => null, 1 => 4.5 ],
+                [ $intType, $floatType, $strType, ],
+                allowAdditionalValues: true,
+                throw: true));
+
+        // Should fail
+        Arr::typeCheckLooseStructure(
+            [ 1, 2, 'f', 'g' ],
+            [ $intType, $intType, $intType ],
+            allowAdditionalValues: true,
+            throw: true);
+    }
 }
