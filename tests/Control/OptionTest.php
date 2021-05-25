@@ -137,6 +137,12 @@ namespace PhpPlus\Core\Tests\Control
             $this->assertIsNone(Option::none()->collapseFalsy());
         }
 
+        public function testReplaceNone()
+        {
+            $this->assertHasStrict(Option::some(4)->replaceNone(5), 4);
+            $this->assertHasStrict(Option::none()->replaceNone(5), 5);
+        }
+
         public function testAccessNullable()
         {
             $obj = new stdClass;

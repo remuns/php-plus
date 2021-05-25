@@ -282,7 +282,18 @@ final class Option
         } else {
             return self::$none;
         }
-    } 
+    }
+
+    /**
+     * Replaces this option with an option wrapping the value passed in if it is empty.
+     * @param mixed $value The value to wrap in the returned option if this option is empty.
+     * @return self A non-empty option wrapping either the value wrapped in this option or the
+     *              value passed in if this option is empty.
+     */
+    public function replaceNone($value): self
+    {
+        return $this->isSome ? $this : self::some($value);
+    }
 
     /* *********************************************************** *
      * Factory methods
