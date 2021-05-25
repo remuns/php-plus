@@ -63,6 +63,12 @@ namespace PhpPlus\Core\Tests\Control
             $this->assertFalse(Option::none()->fValue);
         }
 
+        public function testValueOrDefault()
+        {
+            $this->assertSame(4, Option::some(4)->valueOrDefault(5));
+            $this->assertSame(5, Option::none()->valueOrDefault(5));
+        }
+
         public function testMap()
         {
             $squarer = fn ($x) => $x * $x;

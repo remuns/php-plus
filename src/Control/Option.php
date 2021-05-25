@@ -84,6 +84,17 @@ final class Option
     }
 
     /**
+     * Gets the value wrapped in this option, or the default value passed in if the option
+     * is empty.
+     * @param mixed $default The value to return if the option is empty.
+     * @return mixed 
+     */
+    public function valueOrDefault($default)
+    {
+        return $this->isSome ? $this->value : $default;
+    }
+
+    /**
      * Determines if this option wraps a value equal to the value passed in (using a loose
      * comparison).
      * 
