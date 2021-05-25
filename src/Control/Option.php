@@ -2,6 +2,7 @@
 
 namespace PhpPlus\Core\Control;
 
+use InvalidArgumentException;
 use PhpPlus\Core\Control\Access\Access;
 use PhpPlus\Core\Control\Access\AccessSegment;
 use PhpPlus\Core\Exceptions\InvalidOperationException;
@@ -13,6 +14,15 @@ use PhpPlus\Core\Traits\WellDefinedSelf;
  * 
  * This provides a less ambiguous alternative to null, with additional methods for performing
  * useful operations.
+ * 
+ * @property-read mixed $fValue The value wrapped in this option, or `false` if the
+ *                              option is empty.
+ * @property-read bool  $isNone Whether or not this option is empty.
+ * @property-read bool  $isSome Whether or not this option wraps a value.
+ * @property-read mixed $nValue The value wrapped in this option, or `null` if the option is empty.
+ * @property-read mixed $value  The value wrapped in this option.
+ *                              Accessing this property will throw an exception if the option
+ *                              is empty.
  */
 final class Option
 {
@@ -50,36 +60,28 @@ final class Option
     /* *********************************************************** *
      * Basic getters
      * *********************************************************** */
-    /**
-     * Gets whether or not this option is empty.
-     * @return bool
-     */
-    public function isNone(): bool { return !$this->isSome; }
-
-    /**
-     * Gets whether or not this option wraps a value.
-     * @return bool
-     */
-    public function isSome(): bool { return $this->isSome; }
-
-    /**
-     * Gets the value wrapped in this option, throwing an exception if the option is empty.
-     * @return mixed
-     * @throws InvalidOperationException The option was empty.
-     */
-    public function value(): mixed
+    public function __get(string $name)
     {
-        if (!$this->isSome) {
-            throw new InvalidOperationException('attempt to unwrap an empty option');
-        }
-        return $this->value;
-    }
+        return match ($name) {
+            // Wrapped value or false
+            'fValue' => $this->isSome ? $this->value : false,
 
-    /**
-     * Gets the value wrapped in this option, or null if the option is empty.
-     * @return mixed
-     */
-    public function valueOrNull(): mixed { return $this->value; }
+            'isNone' => !$this->isSome,
+            'isSome' => $this->isSome,
+
+            // Wrapped value or null
+            'nValue' => $this->value,
+
+            // Wrapped value or exception
+            'value' =>
+                $this->isSome ?
+                    $this->value :
+                    throw new InvalidOperationException('attempt to unwrap an empty option'),
+
+            default =>
+                throw new InvalidArgumentException("undefined property name '{$name}'"),
+        };
+    }
 
     /**
      * Determines if this option wraps a value equal to the value passed in (using a loose

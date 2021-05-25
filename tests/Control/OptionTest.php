@@ -16,8 +16,8 @@ namespace PhpPlus\Core\Tests\Control
         ////////   Tests   ////////
         public function testSimpleConstruction()
         {
-            $this->assertTrue(Option::none()->isNone());
-            $this->assertTrue(Option::some(5)->isSome());
+            $this->assertTrue(Option::none()->isNone);
+            $this->assertTrue(Option::some(5)->isSome);
         }
 
         public function testHas()
@@ -40,19 +40,27 @@ namespace PhpPlus\Core\Tests\Control
 
         public function testValue_success()
         {
-            $this->assertSame(4, Option::some(4)->value());
+            $this->assertSame(4, Option::some(4)->value);
         }
 
         public function testValue_error()
         {
             $this->expectException(InvalidOperationException::class);
-            Option::none()->value(); // Should fail with the expected exception
+            Option::none()->value; // Should fail with the expected exception
         }
 
         public function testValueOrNull()
         {
-            $this->assertSame(4, Option::some(4)->valueOrNull());
-            $this->assertNull(Option::none()->valueOrNull());
+            $this->assertSame(4, Option::some(4)->nValue);
+            $this->assertFalse(Option::some(false)->nValue);
+            $this->assertNull(Option::none()->nValue);
+        }
+
+        public function testValueOrFalse()
+        {
+            $this->assertSame(4, Option::some(4)->fValue);
+            $this->assertNull(Option::some(null)->fValue);
+            $this->assertFalse(Option::none()->fValue);
         }
 
         public function testMap()
@@ -186,7 +194,7 @@ namespace PhpPlus\Core\Tests\Control
         ////////   Assertion Helpers   ////////
         protected function assertIsNone(Option $option, string $message = '')
         {
-            $this->assertTrue($option->isNone(), $message);
+            $this->assertTrue($option->isNone, $message);
         }
 
         protected function assertHas(Option $option, mixed $item, string $message = '')
@@ -201,7 +209,7 @@ namespace PhpPlus\Core\Tests\Control
 
         protected function assertIsSome(Option $option, string $message = '')
         {
-            $this->assertTrue($option->isSome(), $message);
+            $this->assertTrue($option->isSome, $message);
         }
         ///////////////////////////////////////
     }
