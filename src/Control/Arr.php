@@ -133,6 +133,76 @@ class Arr extends BaseArr
     }
 
     /**
+     * Type-checks the array passed in based on an array of type arguments that describe the
+     * structure of the array.
+     * 
+     * This method type-checks the array as a strict comparison, i.e. the order of the keys
+     * does matter.
+     * 
+     * @param array     $array  The array to type-check.
+     * @param Type[]    $types  An array of keys mapped to types to check for.
+     *                          The keys should correspond to keys in the $array argument.
+     * @param bool      $allowAdditionalValues
+     *                      Whether or not to allow (non-type-checked) keys in the array
+     *                      passed in that will be ignored. Defaults to `false`.
+     * @param bool      $throw  Whether or not to throw a {@see PhpPlusTypeError} on type-check
+     *                          failure.  Defaults to `false`.
+     * 
+     * @return bool Whether or not the array passed the type-check.
+     * 
+     * @throws PhpPlusTypeError The array failed the type-check and `$throw` was `true`.
+     */
+    public static function typeCheckStrictStructure(
+        array $array, array $types, bool $allowAdditionalValues = false, bool $throw = false): bool
+    {
+        // Ensure that the type array passed in contains types
+        // This type check should always throw if it fails
+        self::typeCheck($types, Types::meta(), throw: true);
+
+        $arrayArrayKeys = array_keys($array);
+        $typeArrayKeys = array_keys($types);
+        $typeCount = count($types);
+        
+        if ($allowAdditionalValues && $typeCount < count($arrayArrayKeys)) {
+            // Ensure that the type array keys are exactly equal to a slice of the array, or else
+            // the type-check cannot possibly succeed
+            if (array_slice($arrayArrayKeys, 0, $typeCount) !== $typeArrayKeys) {
+                return $throw ?
+                        throw new PhpPlusTypeError(
+                            'the type array argument had some keys that were not present in ' .
+                                'the same positions in the array argument') :
+                        false;
+            }
+        } else {
+            // Ensure the keys of the array and type array match exactly
+            if ($arrayArrayKeys !== $typeArrayKeys) {
+                return $throw ?
+                        throw new PhpPlusTypeError(
+                            'the array argument and the type array argument had some keys ' .
+                                'that did not match') :
+                        false;
+            }
+        }
+
+        // Check all the values of the array by key
+        foreach ($array as $key => $value) {
+            // Check the type if the type array offset exists
+            // Don't bother doing anything otherwise; if additional values are not allowed then
+            // the method would have returned / errored out by now
+            if (isset($types[$key])) {
+                $type = $types[$key];
+                if (!$type->has($value)) {
+                    return $throw ?
+                            throw new PhpPlusTypeError(
+                                "array value did not match expected type {$type}") :
+                            false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * Type-checks the array passed in to ensure all arguments are of the specified type.
      * 
      * @param array $array  The array to type-check.
