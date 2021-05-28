@@ -148,6 +148,12 @@ abstract class Type
     public static final function anything(): AnythingType { return AnythingType::value(); }
 
     /**
+     * Returns the "array" type.
+     * @return BaseArrayType
+     */
+    public static final function array(): BaseArrayType { return BaseArrayType::value(); }
+
+    /**
      * Returns the "nothing" empty type at the bottom of the type hierarchy.
      * @return NothingType
      */
