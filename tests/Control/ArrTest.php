@@ -120,7 +120,7 @@ class ArrTest extends TestCase
     }
 
     /**
-     * Tests the {@see Arr::typeCheckLooseStructure} method with no extra arguments allowed when
+     * Tests the {@see Arr::typeCheckLooseStructure} method with extra arguments allowed when
      * a value is returned on failure.
      */
     public function testTypeCheckLooseStructure_extras_return()
@@ -149,7 +149,7 @@ class ArrTest extends TestCase
     }
 
     /**
-     * Tests the {@see Arr::typeCheckLooseStructure} method with no extra arguments allowed when
+     * Tests the {@see Arr::typeCheckLooseStructure} method with extra arguments allowed when
      * an error is thrown on failure.
      */
     public function testTypeCheckLooseStructure_extras_throw()
