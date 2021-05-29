@@ -2,10 +2,13 @@
 
 namespace PhpPlus\Core\Types;
 
+use InvalidArgumentException;
 use ReflectionClass;
 
 /**
  * Represents a standard PHP class type definition.
+ * 
+ * @property-read string $name The name of the class represented.
  */
 final class ClassType extends ObjectType implements NonTrivialTypeInterface
 {
@@ -28,6 +31,15 @@ final class ClassType extends ObjectType implements NonTrivialTypeInterface
         }
     }
 
+    public function __get(string $name)
+    {
+        return match ($name) {
+            'name' => $this->name,
+
+            default => throw new InvalidArgumentException("property {$name} does not exist"),
+        };
+    }
+
     public function compare(Type $other): ?int
     {
         if ($other->typeIndicator() == Type::OBJECT_INDICATOR) {
@@ -40,12 +52,6 @@ final class ClassType extends ObjectType implements NonTrivialTypeInterface
     }
 
     public function baseType(): PrimitiveTypeInterface { return BaseObjectType::value(); }
-
-    /**
-     * Gets the name of this class.
-     * @return string
-     */
-    public function name(): string { return $this->name; }
 
     public function __toString(): string { return $this->name; }
 

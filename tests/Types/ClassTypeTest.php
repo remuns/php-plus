@@ -42,6 +42,15 @@ namespace PhpPlus\Core\Tests\Types
         }
 
         /**
+         * Tests property getters of the {@see ClassType} class.
+         */
+        public function testGetters()
+        {
+            $aType = new ClassType(A::class);
+            $this->assertSame(A::class, $aType->name);
+        }
+
+        /**
          * Tests the "constructor" ({@see ClassType::new()}) method.
          */
         public function testNew()
