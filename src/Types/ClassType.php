@@ -11,7 +11,22 @@ final class ClassType extends ObjectType implements NonTrivialTypeInterface
 {
     use NonTrivialTypeTrait;
 
-    public function __construct(private string $name) { }
+    /**
+     * Constructs a new instance of the {@see self} class representing the class name
+     * passed in.
+     * 
+     * @param string    $name       The name of the class to represent.
+     * @param bool      $autoload   Whether or not to call autoload by default when checking that
+     *                              the class exists.
+     * 
+     * @throws ClassNotFoundException The class name passed in is not defined.
+     */
+    public function __construct(private string $name, bool $autoload = true)
+    {
+        if (!class_exists($name, $autoload)) {
+            throw new ClassNotFoundException("class \"{$name}\" does not exist");
+        }
+    }
 
     public function compare(Type $other): ?int
     {
@@ -25,12 +40,6 @@ final class ClassType extends ObjectType implements NonTrivialTypeInterface
     }
 
     public function baseType(): PrimitiveTypeInterface { return BaseObjectType::value(); }
-
-    /**
-     * Checks whether or not this type represents a type that is defined.
-     * @return bool
-     */
-    public function isDefined(): bool { return class_exists($this->name); }
 
     /**
      * Gets the name of this class.
@@ -58,16 +67,11 @@ final class ClassType extends ObjectType implements NonTrivialTypeInterface
      * @param string $class1 The first class name to compare.
      * @param string $class2 The second class name to compare.
      * 
-     * @return int|null An integer describing the subtype relationship between the classes, OR
-     *                  null if they are not comparable, OR null if either class is non-existent.
+     * @return int|null An integer describing the subtype relationship between the classes, or
+     *                  `null` if the classes are not comparable.
      */
     public static function compareClasses(string $class1, string $class2): ?int
     {
-        // Don't allow meaningless comparisons if either class doesn't exist
-        if (!(class_exists($class1) && class_exists($class2))) {
-            return null;
-        }
-
         if ($class1 == $class2) {
             return 0;
         } elseif (is_subclass_of($class1, $class2, allow_string: true)) {
