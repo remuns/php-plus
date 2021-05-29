@@ -58,6 +58,20 @@ final class ClassType extends ObjectType implements NonTrivialTypeInterface
         return new ReflectionClass($this->name);
     }
 
+    /**
+     * Calls the constructor for the class this type represents.
+     * 
+     * @param mixed ...$args The arguments to call the constructor on.
+     * 
+     * @return object   An instance of the class this type represents resulting from the
+     *                  constructor call.
+     */
+    public function new(...$args): object
+    {
+        $class = $this->name;
+        return new $class(...$args);
+    }
+
     public function has($item): bool { return $item instanceof $this->name; }
 
     /**

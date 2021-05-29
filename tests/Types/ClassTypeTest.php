@@ -40,6 +40,16 @@ namespace PhpPlus\Core\Tests\Types
             $this->assertNotHas($cType, C::class);
             $this->assertNotHas($cType, 1.4);
         }
+
+        /**
+         * Tests the "constructor" ({@see ClassType::new()}) method.
+         */
+        public function testNew()
+        {
+            $aType = new ClassType(A::class);
+            $a = $aType->new(3);
+            $this->assertSame(3, $a->i);
+        }
     }
 }
 
