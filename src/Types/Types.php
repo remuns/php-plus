@@ -35,10 +35,17 @@ final class Types
     /// ^FactoryMethods.Array
     ///////////////////////////////////////////////////////////////////////////
     /**
-     * Returns the "array" type.
+     * Returns an array type.
+     * 
+     * @param Type|null $elementType    The type that elements of the array should be, or `null`
+     *                                  if the base (primitive) array type is desired.
+     * 
      * @return BaseArrayType
      */
-    public static final function array(): BaseArrayType { return BaseArrayType::value(); }
+    public static final function array(?Type $elementType = null): ArrayType
+    {
+        return $elementType === null ? BaseArrayType::value() : new TypedArrayType($elementType);
+    }
     ///////////////////////////////////////////////////////////////////////////
     /// $FactoryMethods.Array
     ///////////////////////////////////////////////////////////////////////////
