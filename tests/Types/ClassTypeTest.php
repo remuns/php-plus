@@ -8,7 +8,7 @@ namespace PhpPlus\Core\Tests\Types
     class ClassTypeTest extends TypeTestCase
     {
         /**
-         * Tests whether or not class types have given values
+         * Tests whether or not class types have given values.
          */
         public function testOwnership()
         {
