@@ -3,6 +3,7 @@
 namespace PhpPlus\Core\Tests\Types;
 
 use PhpPlus\Core\Types\Type;
+use PhpPlus\Core\Types\Types;
 
 /**
  * Tests for the "anything" type.
@@ -14,8 +15,8 @@ class AnythingTypeTest extends TypeTestCase
      */
     public function testCompare()
     {
-        $anything = Type::anything();
-        $otherType =  Type::string();
+        $anything = Types::anything();
+        $otherType =  Types::string();
         $this->assertTrue($anything->compare($otherType) > 0);
         $this->assertTrue($otherType->compare($anything) < 0);
         $this->assertEquals(0, $anything->compare($anything));
@@ -26,7 +27,7 @@ class AnythingTypeTest extends TypeTestCase
      */
     public function testCheck()
     {
-        $anything = Type::anything();
+        $anything = Types::anything();
 
         // Any value should be an instance of this type
         $this->assertTrue($anything->has(4));

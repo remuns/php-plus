@@ -5,6 +5,7 @@ namespace PhpPlus\Core\Tests\Control;
 use PhpPlus\Core\Control\Arr;
 use PhpPlus\Core\Tests\TestCase;
 use PhpPlus\Core\Types\Type;
+use PhpPlus\Core\Types\Types;
 
 use Error;
 
@@ -42,10 +43,10 @@ class ArrTest extends TestCase
      */
     public function testTypeCheck_return()
     {
-        $this->assertTrue(Arr::typeCheck([4, 5, 1, 0, 12], Type::int()));
-        $this->assertFalse(Arr::typeCheck([1, 2, 3, 4, 5.0], Type::int()));
-        $this->assertTrue(Arr::typeCheck(['3', tmpfile(), 444], Type::anything()));
-        $this->assertFalse(Arr::typeCheck([null, null, null, 0], Type::nothing()));
+        $this->assertTrue(Arr::typeCheck([4, 5, 1, 0, 12], Types::int()));
+        $this->assertFalse(Arr::typeCheck([1, 2, 3, 4, 5.0], Types::int()));
+        $this->assertTrue(Arr::typeCheck(['3', tmpfile(), 444], Types::anything()));
+        $this->assertFalse(Arr::typeCheck([null, null, null, 0], Types::nothing()));
     }
 
     /**
@@ -55,9 +56,9 @@ class ArrTest extends TestCase
     {
         $this->expectException(Error::class);
 
-        $this->assertTrue(Arr::typeCheck(['g', 'h', 'i'], Type::string(), throw: true));
-        $this->assertTrue(Arr::typeCheck([null, null], Type::null(), throw: true));
-        Arr::typeCheck([5, 6], Type::float(), throw: true); // Should fail
+        $this->assertTrue(Arr::typeCheck(['g', 'h', 'i'], Types::string(), throw: true));
+        $this->assertTrue(Arr::typeCheck([null, null], Types::null(), throw: true));
+        Arr::typeCheck([5, 6], Types::float(), throw: true); // Should fail
     }
 
     /**
@@ -66,9 +67,9 @@ class ArrTest extends TestCase
      */
     public function testTypeCheckLooseStructure_noExtras_return()
     {
-        $intType = Type::int();
-        $strType = Type::string();
-        $floatType = Type::float();
+        $intType = Types::int();
+        $strType = Types::string();
+        $floatType = Types::float();
 
         $this->assertTrue(
             Arr::typeCheckLooseStructure(
@@ -98,9 +99,9 @@ class ArrTest extends TestCase
     {
         $this->expectException(Error::class);
 
-        $intType = Type::int();
-        $strType = Type::string();
-        $floatType = Type::float();
+        $intType = Types::int();
+        $strType = Types::string();
+        $floatType = Types::float();
 
         $this->assertTrue(
             Arr::typeCheckLooseStructure(
@@ -125,9 +126,9 @@ class ArrTest extends TestCase
      */
     public function testTypeCheckLooseStructure_extras_return()
     {
-        $intType = Type::int();
-        $strType = Type::string();
-        $floatType = Type::float();
+        $intType = Types::int();
+        $strType = Types::string();
+        $floatType = Types::float();
 
         $this->assertTrue(
             Arr::typeCheckLooseStructure(
@@ -156,9 +157,9 @@ class ArrTest extends TestCase
     {
         $this->expectException(Error::class);
 
-        $intType = Type::int();
-        $strType = Type::string();
-        $floatType = Type::float();
+        $intType = Types::int();
+        $strType = Types::string();
+        $floatType = Types::float();
 
         $this->assertTrue(
             Arr::typeCheckLooseStructure(
@@ -188,9 +189,9 @@ class ArrTest extends TestCase
      */
     public function testTypeCheckStrictStructure_noExtras_return()
     {
-        $intType = Type::int();
-        $strType = Type::string();
-        $floatType = Type::float();
+        $intType = Types::int();
+        $strType = Types::string();
+        $floatType = Types::float();
 
         $this->assertTrue(
             Arr::typeCheckStrictStructure(
@@ -225,9 +226,9 @@ class ArrTest extends TestCase
     {
         $this->expectException(Error::class);
 
-        $intType = Type::int();
-        $strType = Type::string();
-        $floatType = Type::float();
+        $intType = Types::int();
+        $strType = Types::string();
+        $floatType = Types::float();
 
         $this->assertTrue(
             Arr::typeCheckStrictStructure(
@@ -254,9 +255,9 @@ class ArrTest extends TestCase
      */
     public function testTypeCheckStrictStructure_extras_return()
     {
-        $intType = Type::int();
-        $strType = Type::string();
-        $floatType = Type::float();
+        $intType = Types::int();
+        $strType = Types::string();
+        $floatType = Types::float();
 
         $this->assertTrue(
             Arr::typeCheckStrictStructure(
@@ -295,10 +296,10 @@ class ArrTest extends TestCase
     {
         $this->expectException(Error::class);
 
-        $intType = Type::int();
-        $strType = Type::string();
-        $floatType = Type::float();
-        $nullType = Type::null();
+        $intType = Types::int();
+        $strType = Types::string();
+        $floatType = Types::float();
+        $nullType = Types::null();
 
         $this->assertTrue(
             Arr::typeCheckStrictStructure(

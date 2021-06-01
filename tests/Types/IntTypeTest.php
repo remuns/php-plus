@@ -3,6 +3,7 @@
 namespace PhpPlus\Core\Tests\Types;
 
 use PhpPlus\Core\Types\Type;
+use PhpPlus\Core\Types\Types;
 
 /**
  * Tests the Type::int() type.
@@ -13,5 +14,5 @@ class IntTypeTest extends PrimitiveTypeTestCase
      * Gets the primitive type under test.
      * @return Type
      */
-    protected function primitiveTypeTested(): Type { return Type::int(); }
+    protected function primitiveTypeTested(): Type { return Types::int(); }
 }

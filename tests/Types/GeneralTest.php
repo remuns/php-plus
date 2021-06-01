@@ -3,6 +3,7 @@
 namespace PhpPlus\Core\Tests\Types;
 
 use PhpPlus\Core\Types\Type;
+use PhpPlus\Core\Types\Types;
 
 /**
  * General tests for PHP types.
@@ -14,8 +15,8 @@ class GeneralTest extends TypeTestCase
      */
     public function testAnything()
     {
-        $anything = Type::anything();
-        $otherType =  Type::string();
+        $anything = Types::anything();
+        $otherType =  Types::string();
         $this->assertSupertypeStrict($anything, $otherType);
         $this->assertSubtypeStrict($otherType, $anything);
         $this->assertSameType($anything, $anything);
@@ -26,8 +27,8 @@ class GeneralTest extends TypeTestCase
      */
     public function testNothing()
     {
-        $nothing = Type::nothing();
-        $otherType =  Type::int();
+        $nothing = Types::nothing();
+        $otherType =  Types::int();
         $this->assertSubtypeStrict($nothing, $otherType);
         $this->assertSupertypeStrict($otherType, $nothing);
         $this->assertSameType($nothing, $nothing); 

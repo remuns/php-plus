@@ -3,6 +3,7 @@
 namespace PhpPlus\Core\Tests\Types;
 
 use PhpPlus\Core\Types\Type;
+use PhpPlus\Core\Types\Types;
 
 /**
  * Tests the Type::bool() type.
@@ -13,43 +14,43 @@ class BoolTypeTest extends PrimitiveTypeTestCase
      * Gets the primitive type under test.
      * @return Type
      */
-    protected function primitiveTypeTested(): Type { return Type::bool(); }
+    protected function primitiveTypeTested(): Type { return Types::bool(); }
 
     /**
-     * Tests type comparisons for the {@see Type::true()} type.
+     * Tests type comparisons for the {@see Types::true()} type.
      */
     public function testTrueTypeComparison()
     {
-        $this->assertSameType(Type::true(), Type::true());
-        $this->assertSubtypeStrict(Type::true(), Type::bool());
-        $this->assertSupertypeStrict(Type::bool(), Type::true());
+        $this->assertSameType(Types::true(), Types::true());
+        $this->assertSubtypeStrict(Types::true(), Types::bool());
+        $this->assertSupertypeStrict(Types::bool(), Types::true());
     }
 
     /**
-     * Tests containment for the {@see Type::true()} type.
+     * Tests containment for the {@see Types::true()} type.
      */
     public function testTrueTypeContainment()
     {
-        $this->assertHas(Type::true(), true);
-        $this->assertNotHas(Type::true(), false);
+        $this->assertHas(Types::true(), true);
+        $this->assertNotHas(Types::true(), false);
     }
 
     /**
-     * Tests type comparisons for the {@see Type::false()} type.
+     * Tests type comparisons for the {@see Types::false()} type.
      */
     public function testFalseTypeComparison()
     {
-        $this->assertSameType(Type::false(), Type::false());
-        $this->assertSubtypeStrict(Type::false(), Type::bool());
-        $this->assertSupertypeStrict(Type::bool(), Type::false());
+        $this->assertSameType(Types::false(), Types::false());
+        $this->assertSubtypeStrict(Types::false(), Types::bool());
+        $this->assertSupertypeStrict(Types::bool(), Types::false());
     }
 
     /**
-     * Tests containment for the {@see Type::false()} type.
+     * Tests containment for the {@see Types::false()} type.
      */
     public function testFalseTypeContainment()
     {
-        $this->assertHas(Type::false(), false);
-        $this->assertNotHas(Type::false(), true);
+        $this->assertHas(Types::false(), false);
+        $this->assertNotHas(Types::false(), true);
     }
 }

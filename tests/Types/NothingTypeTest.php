@@ -3,6 +3,7 @@
 namespace PhpPlus\Core\Tests\Types;
 
 use PhpPlus\Core\Types\Type;
+use PhpPlus\Core\Types\Types;
 
 /**
  * Tests for the "nothing" type.
@@ -14,8 +15,8 @@ class NothingTypeTest extends TypeTestCase
      */
     public function testCompare()
     {
-        $nothing = Type::nothing();
-        $otherType =  Type::string();
+        $nothing = Types::nothing();
+        $otherType =  Types::string();
         $this->assertTrue($nothing->compare($otherType) < 0);
         $this->assertTrue($otherType->compare($nothing) > 0);
         $this->assertEquals(0, $nothing->compare($nothing));
@@ -26,7 +27,7 @@ class NothingTypeTest extends TypeTestCase
      */
     public function testCheck()
     {
-        $nothing = Type::nothing();
+        $nothing = Types::nothing();
 
         // No value should be an instance of this type
         $this->assertFalse($nothing->has(4));

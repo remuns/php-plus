@@ -3,6 +3,7 @@
 namespace PhpPlus\Core\Tests\Types;
 
 use PhpPlus\Core\Types\Type;
+use PhpPlus\Core\Types\Types;
 
 abstract class PrimitiveTypeTestCase extends TypeTestCase
 {
@@ -28,12 +29,12 @@ abstract class PrimitiveTypeTestCase extends TypeTestCase
     protected final function primitiveTypes(): array
     {
         return [
-            Type::bool(),
-            Type::float(),
-            Type::int(),
-            Type::null(),
-            Type::object(),
-            Type::string(),
+            Types::bool(),
+            Types::float(),
+            Types::int(),
+            Types::null(),
+            Types::object(),
+            Types::string(),
         ];
     }
 
