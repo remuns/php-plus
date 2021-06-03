@@ -8,6 +8,8 @@ use PhpPlus\Core\Control\Access\AccessSegment;
 use PhpPlus\Core\Exceptions\InvalidOperationException;
 use PhpPlus\Core\Traits\StaticConstructibleTrait;
 use PhpPlus\Core\Traits\WellDefinedSelf;
+use PhpPlus\Core\Types\PhpPlusTypeError;
+use PhpPlus\Core\Types\Type;
 
 /**
  * A class wrapping either a value or no value.
@@ -104,6 +106,34 @@ final class Option
      *                   or null if the option was empty.
      */
     public function has($item): ?bool { return $this->isSome ? $this->value == $item : null; }
+
+    /**
+     * Type-checks the value wrapped in this option.
+     * 
+     * @param Type $type    The type to check the wrapped value as.
+     * @param bool $throw   Whether or not to throw an error on type-check failure.
+     * 
+     * @return bool|null    The result of the type-check, or `null` if the option does not wrap
+     *                      a value (since in this case no information about the type of the
+     *                      wrapped value exists).
+     * 
+     * @throws PhpPlusTypeError The type-check failed and `$throw` was `true`.
+     */
+    public function typeCheck(Type $type, bool $throw = false): ?bool
+    {
+        if ($this->isSome) {
+            if ($type->has($this->value)) {
+                return true;
+            } else {
+                return $throw ?
+                    throw new PhpPlusTypeError(
+                        "wrapped option value did not match expected type {$type}") :
+                    false;
+            }
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Determines if this option wraps the value passed in (using a strict comparison).

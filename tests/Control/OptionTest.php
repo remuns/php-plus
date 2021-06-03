@@ -9,6 +9,7 @@ namespace PhpPlus\Core\Tests\Control
     use PhpPlus\Core\Tests\TestCase;
 
     use Error;
+    use PhpPlus\Core\Types\Types;
     use stdClass;
 
     class OptionTest extends TestCase
@@ -200,6 +201,30 @@ namespace PhpPlus\Core\Tests\Control
             $this->assertHasStrict(Option::fromNullableOption(Option::some(40)), 40);
             $this->assertIsNone(Option::fromNullableOption(Option::none()));
             $this->assertIsNone(Option::fromNullableOption(null));
+        }
+
+        /**
+         * Tests the {@see Option::typeCheck} method when a value is returned on failure.
+         */
+        public function testTypeCheck_return()
+        {
+            $this->assertTrue(Option::some(4)->typeCheck(Types::int()));
+            $this->assertFalse(Option::some(4)->typeCheck(Types::array()));
+            $this->assertNull(Option::none()->typeCheck(Types::anything()));
+        }
+
+        /**
+         * Tests the {@see Option::typeCheck} method when an error is thrown on failure.
+         */
+        public function testTypeCheck_throw()
+        {
+            $this->expectException(Error::class);
+
+            $this->assertTrue(Option::some(4)->typeCheck(Types::int(), throw: true));
+            $this->assertNull(Option::none()->typeCheck(Types::int(), throw: true));
+
+            // Should fail
+            Option::some('ssss')->typeCheck(Types::int(), throw: true);
         }
         ///////////////////////////////////////
 
