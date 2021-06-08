@@ -287,6 +287,22 @@ class ArrTest extends TestCase
             Arr::typeCheckStrictStructure(
                 [ 1, 2, 3, 'f' ], [ $intType, $intType, 3 => $strType ],
                 additionalArgsType: Option::some(null)));
+
+        // Will succeed because the additional arguments are checked as the
+        // correct type
+        $this->assertTrue(
+            Arr::typeCheckStrictStructure(
+                [ 1, 2, 3, 'f', 'h', true, false, true ],
+                [ $intType, $intType, $intType, $strType, $strType ],
+                additionalArgsType: Option::some(Types::bool())));
+
+        // Will fail because the additional arguments are checked as the
+        // incorrect type
+        $this->assertFalse(
+            Arr::typeCheckStrictStructure(
+                [ 1, 2, 3, 'f', 'h', true, false, true ],
+                [ $intType, $intType, $intType, $strType, $strType ],
+                additionalArgsType: Option::some($intType)));
     }
 
     /**
@@ -314,6 +330,15 @@ class ArrTest extends TestCase
                 [ 1, 2 => 'f', 5 => null, 1 => 4.5 ],
                 [ $intType, 2 => $strType, 5 => $nullType, ],
                 additionalArgsType: Option::some(null),
+                throw: true));
+
+        // Will succeed because the additional arguments are checked as the
+        // correct type
+        $this->assertTrue(
+            Arr::typeCheckStrictStructure(
+                [ 1, 2, 3, 'f', 'h', true, false, true ],
+                [ $intType, $intType, $intType, $strType, $strType ],
+                additionalArgsType: Option::some(Types::bool()),
                 throw: true));
 
         // Should fail since the string argument is out of place
