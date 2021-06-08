@@ -142,9 +142,16 @@ class Arr extends BaseArr
      * @param array     $array  The array to type-check.
      * @param Type[]    $types  An array of keys mapped to types to check for.
      *                          The keys should correspond to keys in the $array argument.
-     * @param bool      $allowAdditionalValues
-     *                      Whether or not to allow (non-type-checked) keys in the array
-     *                      passed in that will be ignored. Defaults to `false`.
+     * @param Option|null $additionalArgsType
+     *                      Whether or not to allow additional keys in the array passed in.
+     *                      An option wrapping a type will cause the additional arguments to be
+     *                      type-checked as the value passed in.
+     *                      An option wrapping `null` will cause the additional arguments to be
+     *                      ignored by the type-check.
+     *                      An empty option will disallow additional arguments.
+     *                      Passing `null` in is permitted because a constant expression is required
+     *                      to allow a default value; however, `null` values will be treated as
+     *                      empty options and will disable allowing additional arguments as well.
      * @param bool      $throw  Whether or not to throw a {@see PhpPlusTypeError} on type-check
      *                          failure.  Defaults to `false`.
      * 
@@ -153,17 +160,24 @@ class Arr extends BaseArr
      * @throws PhpPlusTypeError The array failed the type-check and `$throw` was `true`.
      */
     public static function typeCheckStrictStructure(
-        array $array, array $types, bool $allowAdditionalValues = false, bool $throw = false): bool
+        array $array, array $types, ?Option $additionalArgsType = null, bool $throw = false): bool
     {
         // Ensure that the type array passed in contains types
         // This type check should always throw if it fails
         self::typeCheck($types, Types::meta(), throw: true);
 
+        // Ensure that the option passed in wraps a type if it does not wrap null
+        // This type check should always throw if it fails
+        $additionalArgsType = Option::fromNullableOption($additionalArgsType);
+        if (!$additionalArgsType->hasStrict(null)) {
+            $additionalArgsType->typeCheck(Types::meta(), throw: true);
+        }
+
         $arrayArrayKeys = array_keys($array);
         $typeArrayKeys = array_keys($types);
         $typeCount = count($types);
         
-        if ($allowAdditionalValues && $typeCount < count($arrayArrayKeys)) {
+        if ($additionalArgsType->isSome && $typeCount < count($arrayArrayKeys)) {
             // Ensure that the type array keys are exactly equal to a slice of the array, or else
             // the type-check cannot possibly succeed
             if (array_slice($arrayArrayKeys, 0, $typeCount) !== $typeArrayKeys) {
@@ -184,6 +198,10 @@ class Arr extends BaseArr
             }
         }
 
+        // Store whether or not additional type-checking is required
+        $checkAdditionalKeys = $additionalArgsType->hasStrict(null) === false;
+        $additionalType = $additionalArgsType->nValue;
+
         // Check all the values of the array by key
         foreach ($array as $key => $value) {
             // Check the type if the type array offset exists
@@ -197,9 +215,16 @@ class Arr extends BaseArr
                                 "array value did not match expected type {$type}") :
                             false;
                 }
+            } else if ($checkAdditionalKeys) {
+                if (!$additionalType->has($value)) {
+                    return $throw ?
+                            throw new PhpPlusTypeError(
+                                "array value did not match expected type {$additionalType}") :
+                            false;
+                }
             }
         }
-        return true;
+        return true; // Have checked everything
     }
 
     /**
