@@ -148,6 +148,20 @@ class ArrTest extends TestCase
                 [ 1, 2, 'f', 'g' ],
                 [ $intType, $intType, $intType ],
                 additionalArgsType: Option::some(null)));
+
+        // Should work because all additional args are strings
+        $this->assertTrue(
+            Arr::typeCheckLooseStructure(
+                [ 1, 'ggg' => 'b', 2 => 'f', 1 => 4.5, "gggg", "hhhh" ],
+                [ $intType, $floatType, $strType ],
+                additionalArgsType: Option::some($strType)));
+
+        // Should fail because the argument at the end is an integer
+        $this->assertFalse(
+            Arr::typeCheckLooseStructure(
+                [ 1, 'ggg' => 5, 2 => 'f', 1 => 4.5, 'gggg', 4 ],
+                [ $intType, $floatType, $strType ],
+                additionalArgsType: Option::some($strType)));
     }
 
     /**
