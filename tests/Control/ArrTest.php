@@ -135,19 +135,19 @@ class ArrTest extends TestCase
             Arr::typeCheckLooseStructure(
                 [ 1, 2, 'f', 'g', 6.7, 8.3, 'y' ],
                 [ $intType, $intType, $strType, $strType, $floatType ],
-                allowAdditionalValues: true));
+                additionalArgsType: Option::some(null)));
 
         $this->assertTrue(
             Arr::typeCheckLooseStructure(
                 [ 1, 2 => 'f', 5 => null, 1 => 4.5 ],
                 [ $intType, $floatType, $strType, ],
-                allowAdditionalValues: true));
+                additionalArgsType: Option::some(null)));
 
         $this->assertFalse(
             Arr::typeCheckLooseStructure(
                 [ 1, 2, 'f', 'g' ],
                 [ $intType, $intType, $intType ],
-                allowAdditionalValues: true));
+                additionalArgsType: Option::some(null)));
     }
 
     /**
@@ -166,21 +166,21 @@ class ArrTest extends TestCase
             Arr::typeCheckLooseStructure(
                 [ 1, 2, 'f', 'g', 6.7, 8.3, 'y' ],
                 [ $intType, $intType, $strType, $strType, $floatType ],
-                allowAdditionalValues: true,
+                additionalArgsType: Option::some(null),
                 throw: true));
 
         $this->assertTrue(
             Arr::typeCheckLooseStructure(
                 [ 1, 2 => 'f', 5 => null, 1 => 4.5 ],
                 [ $intType, $floatType, $strType, ],
-                allowAdditionalValues: true,
+                additionalArgsType: Option::some(null),
                 throw: true));
 
         // Should fail
         Arr::typeCheckLooseStructure(
             [ 1, 2, 'f', 'g' ],
             [ $intType, $intType, $intType ],
-            allowAdditionalValues: true,
+            additionalArgsType: Option::some(null),
             throw: true);
     }
 

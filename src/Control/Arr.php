@@ -83,7 +83,7 @@ class Arr extends BaseArr
      * @throws PhpPlusTypeError The array failed the type-check and `$throw` was `true`.
      */
     public static function typeCheckLooseStructure(
-        array $array, array $types, bool $allowAdditionalValues = false, bool $throw = false): bool
+        array $array, array $types, ?Option $additionalArgsType = null, bool $throw = false): bool
     {
         // Ensure that the type array passed in contains types
         // This type check should always throw if it fails
@@ -91,8 +91,15 @@ class Arr extends BaseArr
 
         $arrayArrayKeys = array_keys($array);
         $typeArrayKeys = array_keys($types);
+
+        // Ensure that the option passed in wraps a type if it does not wrap null
+        // This type check should always throw if it fails
+        $additionalArgsType = Option::fromNullableOption($additionalArgsType);
+        if (!$additionalArgsType->hasStrict(null)) {
+            $additionalArgsType->typeCheck(Types::meta(), throw: true);
+        }
         
-        if ($allowAdditionalValues) {
+        if ($additionalArgsType->isSome) {
             // Ensure that the type array keys are a subset of the array keys, or else the
             // type-check cannot possibly succeed
             if (!empty(array_diff($typeArrayKeys, $arrayArrayKeys))) {
@@ -114,6 +121,10 @@ class Arr extends BaseArr
             }
         }
 
+        // Store whether or not additional type-checking is required
+        $checkAdditionalKeys = $additionalArgsType->hasStrict(null) === false;
+        $additionalType = $additionalArgsType->nValue;
+
         // Check all the values of the array by key
         foreach ($array as $key => $value) {
             // Check the type if the type array offset exists
@@ -126,6 +137,13 @@ class Arr extends BaseArr
                         throw new PhpPlusTypeError(
                             "array value did not match expected type {$type}") :
                         false;
+                }
+            } else if ($checkAdditionalKeys) {
+                if (!$additionalType->has($value)) {
+                    return $throw ?
+                            throw new PhpPlusTypeError(
+                                "array value did not match expected type {$additionalType}") :
+                            false;
                 }
             }
         }
