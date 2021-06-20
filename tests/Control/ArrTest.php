@@ -362,4 +362,42 @@ class ArrTest extends TestCase
             extraKeysType: Types::anything(),
             throw: true);
     }
+
+    /**
+     * Tests the {@see Arr::keyDiff} function on two arrays with the same keys.
+     */
+    public function testKeyDiff_sameKeys()
+    {
+        $arr1 = [ 4, 'a' => 1, 'b' => null, 4 ];
+        $arr2 = [ 1 => null, 'b' => null, 0 => 4, 'a' => 'rrr' ];
+
+        $this->assertEquals(Arr::SAME_ARR_RESULT, Arr::keyDiff($arr1, $arr2));
+        $this->assertEquals(Arr::SAME_ARR_RESULT, Arr::keyDiff($arr2, $arr1));
+    }
+
+    /**
+     * Tests the {@see Arr::keyDiff} function on two arrays when one array's keys are a subset
+     * of the other array's keys.
+     */
+    public function testKeyDiff_arrSubset()
+    {
+        $arr1 = [ 'a' => 1, 'b' => 2 ];
+        $arr2 = [ 'a' => 1, 'c' => null, 'b' => null ];
+
+        $this->assertEquals([[], ['c']], Arr::keyDiff($arr1, $arr2));
+        $this->assertEquals([['c'], []], Arr::keyDiff($arr2, $arr1));
+    }
+
+    /**
+     * Tests the {@see Arr::keyDiff} function on two arrays when both arrays contain keys that
+     * are not present in the other array.
+     */
+    public function testKeyDiff_differentKeys()
+    {
+        $arr1 = [ 'a' => null, 'b' => 5 ];
+        $arr2 = [ 'a' => 3, 'c' => 1 ];
+
+        $this->assertEquals([['b'], ['c']], Arr::keyDiff($arr1, $arr2));
+        $this->assertEquals([['c'], ['b']], Arr::keyDiff($arr2, $arr1));
+    }
 }

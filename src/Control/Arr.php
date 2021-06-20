@@ -23,6 +23,16 @@ class Arr extends BaseArr
     use WellDefinedStatic;
 
     /**
+     * An array representing the result of two-sided array diff functions when the two arrays
+     * are equal with respect to the function.
+     * 
+     * @see self::keyDiff
+     * 
+     * @var array
+     */
+    const SAME_ARR_RESULT = [[], []];
+
+    /**
      * Zips the arrays passed in together into a single array.
      * 
      * Unlike the array_map function when a null argument is passed, this function will omit any
@@ -271,6 +281,44 @@ class Arr extends BaseArr
             }
         }
         return true;
+    }
+
+    /**
+     * Gets the difference between the two arrays.
+     * 
+     * @param array $arr0 The first array to compare.
+     * @param array $arr1 The second array to compare.
+     * 
+     * @return array    An array containing an array of keys present in `$arr0` but not `$arr1`
+     *                  at index 0 and an array of keys present in `$arr1` but not `$arr0` at
+     *                  index 1.
+     * 
+     *                  If the arrays contain exactly the same keys, the result of the function
+     *                  will be `[[], []]`.
+     */
+    public static function keyDiff(array $arr0, array $arr1): array
+    {
+        $keys0 = array_keys($arr0);
+        $keys1 = array_keys($arr1);
+
+        $diff0 = [];
+        $diff1 = [];
+
+        // Get keys in $arr0 that are not in $arr1
+        foreach ($keys0 as $k0) {
+            if (!array_key_exists($k0, $arr1)) {
+                $diff0[] = $k0;
+            }
+        }
+
+        // Get the keys in $arr1 that are not in $arr0
+        foreach ($keys1 as $k1) {
+            if (!array_key_exists($k1, $arr0)) {
+                $diff1[] = $k1;
+            }
+        }
+
+        return [$diff0, $diff1];
     }
 
     /**
