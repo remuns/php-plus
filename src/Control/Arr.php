@@ -23,16 +23,6 @@ class Arr extends BaseArr
     use WellDefinedStatic;
 
     /**
-     * An array representing the result of two-sided array diff functions when the two arrays
-     * are equal with respect to the function.
-     * 
-     * @see self::keyDiff
-     * 
-     * @var array
-     */
-    const SAME_ARR_RESULT = [[], []];
-
-    /**
      * Zips the arrays passed in together into a single array.
      * 
      * Unlike the array_map function when a null argument is passed, this function will omit any
@@ -290,11 +280,11 @@ class Arr extends BaseArr
      * @param array $arr1 The second array to compare.
      * 
      * @return array    An array containing an array of keys present in `$arr0` but not `$arr1`
-     *                  at index 0 and an array of keys present in `$arr1` but not `$arr0` at
-     *                  index 1.
+     *                  at index 0, an array of keys present in `$arr1` but not `$arr0` at
+     *                  index 1, and an array of shared keys in index 2.
      * 
      *                  If the arrays contain exactly the same keys, the result of the function
-     *                  will be `[[], []]`.
+     *                  will be `[[], [], array_merge(array_keys($arr0), array_keys($arr1))]`.
      */
     public static function keyDiff(array $arr0, array $arr1): array
     {
@@ -303,22 +293,30 @@ class Arr extends BaseArr
 
         $diff0 = [];
         $diff1 = [];
+        $shared = [];
 
         // Get keys in $arr0 that are not in $arr1
+        // This loop will also filter out keys that are shared by both arrays
         foreach ($keys0 as $k0) {
-            if (!array_key_exists($k0, $arr1)) {
+            if (array_key_exists($k0, $arr1)) {
+                // The key exists in both arrays
+                $shared[] = $k0;
+            } else {
+                // The key exists only in $arr0
                 $diff0[] = $k0;
             }
         }
 
         // Get the keys in $arr1 that are not in $arr0
+        // This loop doesn't handle any keys that are shared by both arrays since they have been
+        // handled by the previous loop (handling them again would cause duplicates)
         foreach ($keys1 as $k1) {
             if (!array_key_exists($k1, $arr0)) {
                 $diff1[] = $k1;
             }
         }
 
-        return [$diff0, $diff1];
+        return [$diff0, $diff1, $shared];
     }
 
     /**

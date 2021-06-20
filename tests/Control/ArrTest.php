@@ -371,8 +371,10 @@ class ArrTest extends TestCase
         $arr1 = [ 4, 'a' => 1, 'b' => null, 4 ];
         $arr2 = [ 1 => null, 'b' => null, 0 => 4, 'a' => 'rrr' ];
 
-        $this->assertEquals(Arr::SAME_ARR_RESULT, Arr::keyDiff($arr1, $arr2));
-        $this->assertEquals(Arr::SAME_ARR_RESULT, Arr::keyDiff($arr2, $arr1));
+        $this->assertKeyDiffResultsEquivalent(
+            [[], [], [0, 1, 'a', 'b']], Arr::keyDiff($arr1, $arr2));
+        $this->assertKeyDiffResultsEquivalent(
+            [[], [], [0, 1, 'a', 'b']], Arr::keyDiff($arr2, $arr1));
     }
 
     /**
@@ -384,8 +386,8 @@ class ArrTest extends TestCase
         $arr1 = [ 'a' => 1, 'b' => 2 ];
         $arr2 = [ 'a' => 1, 'c' => null, 'b' => null ];
 
-        $this->assertEquals([[], ['c']], Arr::keyDiff($arr1, $arr2));
-        $this->assertEquals([['c'], []], Arr::keyDiff($arr2, $arr1));
+        $this->assertKeyDiffResultsEquivalent([[], ['c'], ['a', 'b']], Arr::keyDiff($arr1, $arr2));
+        $this->assertKeyDiffResultsEquivalent([['c'], [], ['a', 'b']], Arr::keyDiff($arr2, $arr1));
     }
 
     /**
@@ -397,7 +399,21 @@ class ArrTest extends TestCase
         $arr1 = [ 'a' => null, 'b' => 5 ];
         $arr2 = [ 'a' => 3, 'c' => 1 ];
 
-        $this->assertEquals([['b'], ['c']], Arr::keyDiff($arr1, $arr2));
-        $this->assertEquals([['c'], ['b']], Arr::keyDiff($arr2, $arr1));
+        $this->assertKeyDiffResultsEquivalent([['b'], ['c'], ['a']], Arr::keyDiff($arr1, $arr2));
+        $this->assertKeyDiffResultsEquivalent([['c'], ['b'], ['a']], Arr::keyDiff($arr2, $arr1));
+    }
+
+    /**
+     * Ensures that the result arrays of calling {@see Arr::keyDiff} are equivalent.
+     */
+    private function assertKeyDiffResultsEquivalent(array $expected, array $actual)
+    {
+        [ $e1, $e2, $e3 ] = $expected;
+        [ $a1, $a2, $a3 ] = $actual;
+        sort($e1); sort($e2); sort($e3);
+        sort($a1); sort($a2); sort($a3);
+        $this->assertEquals($e1, $a1);
+        $this->assertEquals($e2, $a2);
+        $this->assertEquals($e3, $a3);
     }
 }
