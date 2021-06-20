@@ -135,33 +135,33 @@ class ArrTest extends TestCase
             Arr::typeCheckLooseStructure(
                 [ 1, 2, 'f', 'g', 6.7, 8.3, 'y' ],
                 [ $intType, $intType, $strType, $strType, $floatType ],
-                additionalArgsType: Option::some(null)));
+                extraKeysType: Types::anything()));
 
         $this->assertTrue(
             Arr::typeCheckLooseStructure(
                 [ 1, 2 => 'f', 5 => null, 1 => 4.5 ],
                 [ $intType, $floatType, $strType, ],
-                additionalArgsType: Option::some(null)));
+                extraKeysType: Types::anything()));
 
         $this->assertFalse(
             Arr::typeCheckLooseStructure(
                 [ 1, 2, 'f', 'g' ],
                 [ $intType, $intType, $intType ],
-                additionalArgsType: Option::some(null)));
+                extraKeysType: Types::anything()));
 
         // Should work because all additional args are strings
         $this->assertTrue(
             Arr::typeCheckLooseStructure(
                 [ 1, 'ggg' => 'b', 2 => 'f', 1 => 4.5, "gggg", "hhhh" ],
                 [ $intType, $floatType, $strType ],
-                additionalArgsType: Option::some($strType)));
+                extraKeysType: $strType));
 
         // Should fail because the argument at the end is an integer
         $this->assertFalse(
             Arr::typeCheckLooseStructure(
                 [ 1, 'ggg' => 5, 2 => 'f', 1 => 4.5, 'gggg', 4 ],
                 [ $intType, $floatType, $strType ],
-                additionalArgsType: Option::some($strType)));
+                extraKeysType: $strType));
     }
 
     /**
@@ -180,21 +180,21 @@ class ArrTest extends TestCase
             Arr::typeCheckLooseStructure(
                 [ 1, 2, 'f', 'g', 6.7, 8.3, 'y' ],
                 [ $intType, $intType, $strType, $strType, $floatType ],
-                additionalArgsType: Option::some(null),
+                extraKeysType: Types::anything(),
                 throw: true));
 
         $this->assertTrue(
             Arr::typeCheckLooseStructure(
                 [ 1, 2 => 'f', 5 => null, 1 => 4.5 ],
                 [ $intType, $floatType, $strType, ],
-                additionalArgsType: Option::some(null),
+                extraKeysType: Types::anything(),
                 throw: true));
 
         // Should fail
         Arr::typeCheckLooseStructure(
             [ 1, 2, 'f', 'g' ],
             [ $intType, $intType, $intType ],
-            additionalArgsType: Option::some(null),
+            extraKeysType: Types::anything(),
             throw: true);
     }
 
@@ -278,29 +278,29 @@ class ArrTest extends TestCase
             Arr::typeCheckStrictStructure(
                 [ 1, 2, 'f', 'g', 6.7 ],
                 [ $intType, $intType, $strType, $strType, $floatType ],
-                additionalArgsType: Option::some(null)));
+                extraKeysType: Types::anything()));
 
         $this->assertTrue(
             Arr::typeCheckStrictStructure(
                 [ 1, 2 => 'f', 1 => 4.5 ],
                 [ $intType, 2 => $strType, 1 => $floatType ],
-                additionalArgsType: Option::some(null)));
+                extraKeysType: Types::anything()));
 
         $this->assertFalse(
             Arr::typeCheckStrictStructure(
                 [ 1, 2, 'f' ], [ $intType, $intType, $intType ],
-                additionalArgsType: Option::some(null)));
+                extraKeysType: Types::anything()));
 
         $this->assertTrue(
             Arr::typeCheckStrictStructure(
                 [ 1, 2, 3, 'f' ], [ $intType, $intType, $intType ],
-                additionalArgsType: Option::some(null)));
+                extraKeysType: Types::anything()));
 
         // Will fail because is strict structure
         $this->assertFalse(
             Arr::typeCheckStrictStructure(
                 [ 1, 2, 3, 'f' ], [ $intType, $intType, 3 => $strType ],
-                additionalArgsType: Option::some(null)));
+                extraKeysType: Types::anything()));
 
         // Will succeed because the additional arguments are checked as the
         // correct type
@@ -308,7 +308,7 @@ class ArrTest extends TestCase
             Arr::typeCheckStrictStructure(
                 [ 1, 2, 3, 'f', 'h', true, false, true ],
                 [ $intType, $intType, $intType, $strType, $strType ],
-                additionalArgsType: Option::some(Types::bool())));
+                extraKeysType: Types::bool()));
 
         // Will fail because the additional arguments are checked as the
         // incorrect type
@@ -316,7 +316,7 @@ class ArrTest extends TestCase
             Arr::typeCheckStrictStructure(
                 [ 1, 2, 3, 'f', 'h', true, false, true ],
                 [ $intType, $intType, $intType, $strType, $strType ],
-                additionalArgsType: Option::some($intType)));
+                extraKeysType: $intType));
     }
 
     /**
@@ -336,14 +336,14 @@ class ArrTest extends TestCase
             Arr::typeCheckStrictStructure(
                 [ 1, 2, 'f', 'g', 6.7, 8.3, 'y' ],
                 [ $intType, $intType, $strType, $strType, $floatType ],
-                additionalArgsType: Option::some(null),
+                extraKeysType: Types::anything(),
                 throw: true));
 
         $this->assertTrue(
             Arr::typeCheckStrictStructure(
                 [ 1, 2 => 'f', 5 => null, 1 => 4.5 ],
                 [ $intType, 2 => $strType, 5 => $nullType, ],
-                additionalArgsType: Option::some(null),
+                extraKeysType: Types::anything(),
                 throw: true));
 
         // Will succeed because the additional arguments are checked as the
@@ -352,14 +352,14 @@ class ArrTest extends TestCase
             Arr::typeCheckStrictStructure(
                 [ 1, 2, 3, 'f', 'h', true, false, true ],
                 [ $intType, $intType, $intType, $strType, $strType ],
-                additionalArgsType: Option::some(Types::bool()),
+                extraKeysType: Types::bool(),
                 throw: true));
 
         // Should fail since the string argument is out of place
         Arr::typeCheckStrictStructure(
             [ 1, 2, 'f', 'g' ],
             [ $intType, $intType, 3 => $strType ],
-            additionalArgsType: Option::some(null),
+            extraKeysType: Types::anything(),
             throw: true);
     }
 }
