@@ -4,16 +4,27 @@ namespace PhpPlus\Core\Tests\Types
 {
     use PhpPlus\Core\Tests\Types\LooseStructuredArrayTypeTest\{A, B};
     use PhpPlus\Core\Types\LooseStructuredArrayType;
+    use PhpPlus\Core\Types\TypedArrayType;
     use PhpPlus\Core\Types\Types;
 
     class LooseStructuredArrayTypeTest extends TypeTestCase
     {
+        /**
+         * Tests an attempt to create a degenerate loose-structured array type.
+         */
+        public function testMake_degenerate()
+        {
+            $this->assertEquals(
+                Types::array(Types::string()),
+                LooseStructuredArrayType::make([], Types::string()));
+        }
+
         public function testHas_noExtras()
         {
-            $arrType = new LooseStructuredArrayType([
+            $arrType = LooseStructuredArrayType::make([
                 Types::null(), Types::int(),
                 Types::class(A::class), Types::class(B::class),
-            ], extraKeysType: Types::nothing());
+            ]);
 
             $this->assertHas($arrType, [null, 1, new A, new B]);
             $this->assertHas($arrType, [null, 0, new B, new B]);
@@ -25,7 +36,7 @@ namespace PhpPlus\Core\Tests\Types
 
         public function testHas_allExtras()
         {
-            $arrType = new LooseStructuredArrayType([
+            $arrType = LooseStructuredArrayType::make([
                 Types::string(), Types::class(A::class),
             ], extraKeysType: Types::anything());
 
@@ -35,7 +46,7 @@ namespace PhpPlus\Core\Tests\Types
 
         public function testHas_someExtras()
         {
-            $arrType = new LooseStructuredArrayType([
+            $arrType = LooseStructuredArrayType::make([
                 Types::string(), Types::class(A::class),
             ], extraKeysType: Types::class(B::class));
 
@@ -46,7 +57,7 @@ namespace PhpPlus\Core\Tests\Types
 
         public function testCompare()
         {
-            $arrType1 = new LooseStructuredArrayType([
+            $arrType1 = LooseStructuredArrayType::make([
                 Types::array(), Types::string(), Types::class(A::class),
             ], extraKeysType: Types::anything());
 
@@ -55,44 +66,44 @@ namespace PhpPlus\Core\Tests\Types
             // Key order doesn't matter
             $this->assertSameType(
                 $arrType1,
-                new LooseStructuredArrayType([
+                LooseStructuredArrayType::make([
                     1 => Types::string(), 0 => Types::array(), Types::class(A::class),
                 ], extraKeysType: Types::anything()));
 
             $this->assertSupertypeStrict(
                 $arrType1,
-                new LooseStructuredArrayType([
+                LooseStructuredArrayType::make([
                     Types::array(Types::int()), Types::string(), Types::class(B::class),
                 ], extraKeysType: Types::anything()));
             
             // Key order doesn't matter
             $this->assertSupertypeStrict(
                 $arrType1,
-                new LooseStructuredArrayType([
+                LooseStructuredArrayType::make([
                     1 => Types::string(), 0 => Types::array(Types::int()), Types::class(A::class)
                 ], extraKeysType: Types::anything()));
 
             $this->assertSubtypeStrict(
                 $arrType1,
-                new LooseStructuredArrayType([
+                LooseStructuredArrayType::make([
                     Types::array(), Types::string(),
                 ], extraKeysType: Types::anything()));
 
             $this->assertSupertypeStrict(
                 $arrType1,
-                new LooseStructuredArrayType([
+                LooseStructuredArrayType::make([
                     Types::array(), Types::string(), Types::class(B::class),
                 ], extraKeysType: Types::string()));
 
             $this->assertIncomparable(
                 $arrType1,
-                new LooseStructuredArrayType([
+                LooseStructuredArrayType::make([
                     Types::array(), Types::string(),
                 ], extraKeysType: Types::class(A::class)));
             
             $this->assertIncomparable(
                 $arrType1,
-                new LooseStructuredArrayType([
+                LooseStructuredArrayType::make([
                     Types::int(), Types::string(), Types::class(B::class)
                 ], extraKeysType: Types::anything()));
         }

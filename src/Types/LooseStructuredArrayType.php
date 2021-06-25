@@ -22,6 +22,31 @@ final class LooseStructuredArrayType extends ArrayType
     use NonTrivialTypeTrait;
 
     /**
+     * Creates a structured array type with the given parameters.
+     * 
+     * @param Type[]    $types          An array of types describing the type structure of arrays
+     *                                  that are instances of this type.
+     * @param Type|null $extraKeysType  The type of extra keys to allow, or `null` to disallow
+     *                                  extra keys.  The default is `null`, which is equivalent
+     *                                  to passing {@see Types::nothing()}.
+     * @return ArrayType    An instance of this class created from the parameters passed in, or
+     *                      an instance of {@see TypedArrayType} if the `$types` parameter is an
+     *                      empty array.
+     */
+    public static function make(array $types, ?Type $extraKeysType = null): ArrayType
+    {
+        if ($extraKeysType === null) {
+            $extraKeysType = Types::nothing();
+        }
+
+        if (empty($types)) {
+            return new TypedArrayType($extraKeysType);
+        }
+
+        return new self($types, $extraKeysType);
+    }
+
+    /**
      * Constructs a new instance of the {@see self} class.
      * 
      * @param Type[]    $types          A key-value mapping of keys to types describing the
@@ -32,7 +57,7 @@ final class LooseStructuredArrayType extends ArrayType
      *                                  Note that passing in the `nothing` type is equivalent to
      *                                  preventing additional keys.
      */
-    public function __construct(private array $types, private Type $extraKeysType)
+    private function __construct(private array $types, private Type $extraKeysType)
     {
         Arr::typeCheck($types, Types::meta(), throw: true);
 
